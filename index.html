@@ -78,6 +78,23 @@ button{cursor:pointer}
   padding:5px 11px; font-size:12.5px; color:var(--muted); white-space:nowrap}
 .who button[aria-pressed="true"]{font-weight:600}
 
+.hcard{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius);
+  padding:11px 13px; margin-top:12px; box-shadow:var(--shadow)}
+.hcap{font-family:Oswald,sans-serif; font-size:11.5px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:6px}
+.hrow{display:grid; grid-template-columns:auto 44px 1fr; gap:9px; align-items:baseline; padding:2px 0}
+.hname{font-size:13.5px; font-weight:600}
+.hnum{font-family:Oswald,sans-serif; font-size:21px; text-align:right; font-variant-numeric:tabular-nums}
+.hsub{font-size:12px; color:var(--muted)}
+
+.medals{display:flex; gap:10px; margin-top:7px; flex-wrap:wrap}
+.medal{display:flex; align-items:center; gap:5px; font-size:13px}
+.medal b{font-family:Oswald,sans-serif; font-size:17px; font-variant-numeric:tabular-nums}
+.mdot{width:15px; height:15px; border-radius:50%; display:inline-grid; place-items:center;
+  font-size:9px; font-weight:700; color:#3a2f10}
+.m1{background:#E8C255} .m2{background:#C9CDD2} .m3{background:#D9A273}
+.res-medal{display:inline-flex; align-items:center; gap:5px}
+
 .days{display:flex; flex-direction:column; gap:8px; margin-top:12px}
 .day{background:var(--surface); border:1px solid var(--line-soft); border-radius:var(--radius);
   padding:10px 12px; display:grid; grid-template-columns:42px 1fr; gap:11px; align-items:start}
@@ -260,6 +277,15 @@ var SOFT   = ["--c1s","--c2s","--c3s","--c4s"];
 var DOW  = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 var MON  = ["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
 var MONG = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+var MEDALS = [
+  {id:"1", name:"1 место"}, {id:"2", name:"2 место"},
+  {id:"3", name:"3 место"}, {id:"0", name:"Без медали"}
+];
+function medalHtml(m){
+  if(m==="1"||m==="2"||m==="3")
+    return '<span class="res-medal"><span class="mdot m'+m+'">'+m+'</span>'+m+' место</span>';
+  return "";
+}
 var TYPES = [
   {id:"training",    label:"Тренировка"},
   {id:"lesson",      label:"Занятие"},
@@ -287,7 +313,7 @@ var S = {
   monthCursor:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   filter:"all",
   cfg:{people:[], school:null},
-  rules:[], acts:[], fixed:[], vars:[], aways:[], opens:[],
+  rules:[], acts:[], fixed:[], vars:[], aways:[], opens:[], holidays:[],
   ready:false
 };
 function people(){ return S.cfg.people||[]; }
@@ -299,8 +325,8 @@ function pColor(id){ return "var("+COLORS[pIndex(id)%4]+")"; }
 var CS=null;
 try{ if(tg&&tg.CloudStorage&&(!tg.isVersionAtLeast||tg.isVersionAtLeast("6.9"))) CS=tg.CloudStorage; }catch(e){ CS=null; }
 var LSK="shtab.v1";
-var PREFIX = {rules:"r_", acts:"a_", fixed:"f_", vars:"v_", aways:"w_", opens:"o_"};
-var COLLS = ["rules","acts","fixed","vars","aways","opens"];
+var PREFIX = {rules:"r_", acts:"a_", fixed:"f_", vars:"v_", aways:"w_", opens:"o_", holidays:"h_"};
+var COLLS = ["rules","acts","fixed","vars","aways","opens","holidays"];
 
 function lsRead(){ try{ var r=localStorage.getItem(LSK); return r?JSON.parse(r):null; }catch(e){ return null; } }
 function lsWrite(){ try{
@@ -398,13 +424,55 @@ function purgeOld(){
   });
 }
 function rowTitle(coll, r){
+  if(coll==="holidays") return (r.label||"Каникулы")+" · "+(r.from||"")+"–"+(r.to||"");
   if(coll==="opens") return r.text||"Пункт";
   if(coll==="fixed"||coll==="vars") return (r.label||"Расход")+" · "+money(r.amount)+" ₽";
   if(coll==="aways") return "Отъезд: "+(r.place||"—");
   if(coll==="rules") return (r.title||"Занятие")+" · в сетке";
   return (r.title||"Запись")+(r.date?" · "+r.date:"");
 }
-var COLL_RU={rules:"сетка",acts:"записи",fixed:"постоянные",vars:"разовые",aways:"отъезды",opens:"открытое"};
+var COLL_RU={rules:"сетка",acts:"записи",fixed:"постоянные",vars:"разовые",
+             aways:"отъезды",opens:"открытое",holidays:"каникулы"};
+
+/* ===== holidays ===== */
+function plural(n, one, few, many){
+  var a=Math.abs(n)%100, b=a%10;
+  if(a>10&&a<20) return many; if(b>1&&b<5) return few; if(b===1) return one; return many;
+}
+function dayWord(n){ return plural(n,"день","дня","дней"); }
+/* Next holiday for one person: the one running now, else the nearest ahead. */
+function holidayFor(pid, todayStr){
+  var mine=live("holidays").filter(function(h){
+    return !h.people || !h.people.length || h.people.indexOf(pid)>=0;
+  }).sort(function(a,b){ return a.from<b.from?-1:1; });
+  for(var i=0;i<mine.length;i++){
+    var h=mine[i];
+    if(h.from<=todayStr && todayStr<=h.to) return {h:h, now:true, days:diffDays(todayStr,h.to)};
+    if(h.from>todayStr) return {h:h, now:false, days:diffDays(todayStr,h.from)};
+  }
+  return null;
+}
+function diffDays(a,b){ return Math.round((fromYmd(b)-fromYmd(a))/86400000); }
+function shortDate(s){ var d=fromYmd(s); return d.getDate()+" "+MONG[d.getMonth()]; }
+
+function holidaysCard(){
+  if(!live("holidays").length) return "";
+  var today=ymd(new Date()), rows="";
+  people().forEach(function(p){
+    if(!passFilter(p.id)) return;
+    var r=holidayFor(p.id, today);
+    if(!r) return;
+    rows+='<div class="hrow">'+
+      '<span class="hname" style="color:'+pColor(p.id)+'">'+esc(p.name)+'</span>'+
+      '<span class="hnum">'+(r.now?r.days:r.days)+'</span>'+
+      '<span class="hsub">'+(r.now
+        ? dayWord(r.days)+" каникул, до "+shortDate(r.h.to)
+        : dayWord(r.days)+" до "+esc(r.h.label||"каникул")+", "+shortDate(r.h.from))+'</span>'+
+    '</div>';
+  });
+  if(!rows) return "";
+  return '<div class="hcard"><div class="hcap">Каникулы</div>'+rows+'</div>';
+}
 function saveCfg(){
   render();
   if(CS) CS.setItem("cfg", JSON.stringify(S.cfg), function(){});
@@ -492,7 +560,7 @@ function renderWeek(){
 
   if(needSetup()){ viewEl.innerHTML=setupBlock(); return; }
 
-  var today=ymd(new Date()), html='<div class="days">';
+  var today=ymd(new Date()), html=holidaysCard()+'<div class="days">';
   for(var i=0;i<7;i++){
     var d=addDays(ws,i), key=ymd(d);
     var occ=occurrences(key).filter(function(o){ return passFilter(o.person); });
@@ -619,6 +687,17 @@ function renderMoney(){
 }
 
 /* ---- wins ---- */
+function medalsRow(rows){
+  var c={"1":0,"2":0,"3":0};
+  rows.forEach(function(a){ if(c[a.medal]!==undefined) c[a.medal]++; });
+  if(!(c["1"]+c["2"]+c["3"])) return '<div class="srow"><span class="lbl">Медалей пока нет</span></div>';
+  var h='<div class="medals">';
+  ["1","2","3"].forEach(function(m){
+    if(!c[m]) return;
+    h+='<span class="medal"><span class="mdot m'+m+'">'+m+'</span><b>'+c[m]+'</b></span>';
+  });
+  return h+'</div>';
+}
 function renderWins(){
   subnavEl.innerHTML = whoFilter();
   wireWho();
@@ -642,6 +721,7 @@ function renderWins(){
       '<div class="srow"><span class="lbl">Соревнований</span><span class="n">'+comp+'</span></div>'+
       '<div class="srow"><span class="lbl">Индивидуалок</span><span class="n">'+ind+'</span></div>'+
       '<div class="srow"><span class="lbl">Отмечено проведённых</span><span class="n">'+don+'</span></div>'+
+      medalsRow(mine)+
     '</div>';
   });
   html+='</div>';
@@ -654,7 +734,9 @@ function renderWins(){
       '<div class="when">'+d.getDate()+" "+MONG[d.getMonth()]+' · <span style="color:'+pColor(c.person)+'">'+esc(pName(c.person))+'</span>'+
         (c.place?' · '+esc(c.place):'')+'</div>'+
       '<div style="font-weight:600">'+esc(c.title||"Соревнование")+'</div>'+
-      (c.result?'<div class="res">'+esc(c.result)+'</div>':'<div class="when">результат не записан</div>')+
+      (medalHtml(c.medal)||c.result
+        ? '<div class="res">'+medalHtml(c.medal)+(medalHtml(c.medal)&&c.result?' · ':'')+esc(c.result||"")+'</div>'
+        : '<div class="when">результат не записан</div>')+
     '</button>';
   });
   viewEl.innerHTML=html;
@@ -790,16 +872,20 @@ function openAct(id){
     '<div class="field"><label for="a-time">Время</label><input type="time" id="a-time" value="'+esc(cur.time||"")+'"></div>'+
     '<div class="field"><label for="a-title">Название</label><input id="a-title" value="'+esc(cur.title||"")+'" placeholder="Кубок клубов, концерт, приём…"></div>'+
     '<div class="field"><label for="a-place">Где</label><input id="a-place" value="'+esc(cur.place||"")+'"></div>'+
-    '<div class="field" id="aRes"><label for="a-result">Результат</label><input id="a-result" value="'+esc(cur.result||"")+'" placeholder="1 место, 3 схватки…"></div>'+
+    '<div class="field" id="aRes"><label>Место</label>'+segHtml("am", MEDALS, cur.medal||"", false)+
+      '<label for="a-result" style="margin-top:7px">Подробности</label>'+
+      '<input id="a-result" value="'+esc(cur.result||"")+'" placeholder="3 схватки, личный рекорд…"></div>'+
     '<div class="field"><label for="a-note">Заметка</label><textarea id="a-note">'+esc(cur.note||"")+'</textarea></div>';
   sheet(id?"Запись":"Новая запись", inner, function(){
     var date=val("a-date"); if(!date){ document.getElementById("a-date").focus(); return false; }
     put("acts", id||newId(), {date:date, person:segVal("ap",cur.person), type:segVal("at",cur.type),
       time:val("a-time"), title:val("a-title"), place:val("a-place"),
-      result:val("a-result"), note:val("a-note"), status:cur.status||"done"});
+      result:val("a-result"), medal:segVal("am", cur.medal||""),
+      note:val("a-note"), status:cur.status||"done"});
     S.weekStart=startOfWeek(fromYmd(date));
   }, id?function(){ drop("acts", id); }:null);
-  wireSeg("ap"); wireSeg("at", function(v){ document.getElementById("aRes").hidden=(v!=="competition"); });
+  wireSeg("ap"); wireSeg("am");
+  wireSeg("at", function(v){ document.getElementById("aRes").hidden=(v!=="competition"); });
   document.getElementById("aRes").hidden=(cur.type!=="competition");
 }
 
@@ -892,6 +978,43 @@ function openAway(){
   wireSeg("wp");
 }
 
+function openHoliday(id){
+  var h=id?findRow("holidays",id):null;
+  var ps=people(); if(!ps.length){ openSettings(); return; }
+  var cur=h||{label:"", from:ymd(new Date()), to:ymd(new Date()), people:[]};
+  var ph='<div class="seg" data-seg="hp">';
+  ps.forEach(function(p,i){
+    var on=!cur.people||!cur.people.length||cur.people.indexOf(p.id)>=0;
+    ph+='<button type="button" data-p="'+esc(p.id)+'" aria-pressed="'+on+'"'+
+      (on?' style="color:var('+COLORS[i%4]+'); border-color:var('+COLORS[i%4]+')"':'')+'>'+esc(p.name)+'</button>';
+  });
+  ph+='</div>';
+  var inner=
+    '<div class="hint">У кого даты совпадают — отметьте нескольких. В феврале у детей они расходятся, тогда заведите два периода.</div>'+
+    '<div class="field"><label for="h-label">Какие</label><input id="h-label" value="'+esc(cur.label)+'" placeholder="Осенние, зимние, весенние…"></div>'+
+    '<div class="field"><label>У кого</label>'+ph+'</div>'+
+    '<div class="field"><label for="h-from">С</label><input type="date" id="h-from" value="'+esc(cur.from)+'"></div>'+
+    '<div class="field"><label for="h-to">По</label><input type="date" id="h-to" value="'+esc(cur.to)+'"></div>';
+  sheet(id?"Каникулы":"Новые каникулы", inner, function(){
+    var f=val("h-from"), t=val("h-to")||f;
+    if(!f){ document.getElementById("h-from").focus(); return false; }
+    var who=[];
+    Array.prototype.forEach.call(modal.querySelectorAll('[data-seg="hp"] button'), function(b){
+      if(b.getAttribute("aria-pressed")==="true") who.push(b.getAttribute("data-p"));
+    });
+    put("holidays", id||newId(), {label:val("h-label")||"Каникулы", from:f, to:t, people:who});
+  }, id?function(){ drop("holidays", id); }:null);
+  Array.prototype.forEach.call(modal.querySelectorAll('[data-seg="hp"] button'), function(b,i){
+    b.onclick=function(){
+      var on=b.getAttribute("aria-pressed")==="true";
+      b.setAttribute("aria-pressed", on?"false":"true");
+      if(on) b.removeAttribute("style");
+      else { var c="var("+COLORS[i%4]+")"; b.style.color=c; b.style.borderColor=c; }
+      haptic();
+    };
+  });
+}
+
 function openOpenItem(){
   var inner='<div class="field"><label for="o-text">Вопрос</label><textarea id="o-text" placeholder="Кто идёт на концерт 24.10"></textarea></div>';
   sheet("Нерешённое", inner, function(){
@@ -904,16 +1027,17 @@ function openOpenItem(){
 function openChooser(){
   var items=[["Занятие или событие","addA"],["Повторяющееся в сетке","addR"],
              ["Разовый расход","addV"],["Постоянный платёж","addF"],
-             ["Отъезд","addW"],["Нерешённый вопрос","addO"]];
+             ["Отъезд","addW"],["Каникулы","addH"],["Нерешённый вопрос","addO"]];
   var h='<div class="sheet-actions" style="flex-direction:column">';
   items.forEach(function(it,i){ h+='<button class="btn'+(i===0?" primary":"")+'" id="'+it[1]+'">'+it[0]+'</button>'; });
   h+='</div>';
   modal.innerHTML='<div class="scrim" id="scrim"></div><div class="sheet"><div class="sheet-in"><h2>Что добавить</h2>'+h+'</div></div>';
   showBack(true);
   document.getElementById("scrim").onclick=closeSheet;
-  var map={addA:openAct, addR:openRule, addV:openVar, addF:openFixed, addW:openAway, addO:openOpenItem};
+  var map={addA:openAct, addR:openRule, addV:openVar, addF:openFixed,
+           addW:openAway, addH:openHoliday, addO:openOpenItem};
   Object.keys(map).forEach(function(k){
-    document.getElementById(k).onclick=function(){ closeSheet(); map[k](k==="addA"||k==="addR"||k==="addV"||k==="addF"?null:undefined); };
+    document.getElementById(k).onclick=function(){ closeSheet(); map[k](null); };
   });
 }
 
