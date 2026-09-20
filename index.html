@@ -164,6 +164,20 @@ h2.sec span{font-family:"Golos Text",sans-serif; letter-spacing:0; text-transfor
   width:52px; height:52px; border-radius:50%; border:0; background:var(--accent);
   color:#fff; font-size:27px; line-height:1; box-shadow:0 6px 18px rgba(27,107,79,.35)}
 
+.undo{position:fixed; left:12px; right:12px; bottom:calc(78px + env(safe-area-inset-bottom,0px)); z-index:35;
+  background:var(--surface); border:1px solid var(--accent); color:var(--ink);
+  border-radius:12px; padding:11px 14px; display:flex; align-items:center;
+  justify-content:space-between; gap:12px; font-size:13.5px; box-shadow:var(--shadow)}
+.undo button{background:none; border:0; color:var(--accent); font-weight:700; font-size:13.5px; padding:2px 4px}
+
+.trash-row{display:flex; align-items:center; gap:10px; background:var(--surface-2);
+  border:1px solid var(--line-soft); border-radius:10px; padding:9px 11px; margin-bottom:7px}
+.trash-row .tw{flex:1; min-width:0}
+.trash-row .tt{font-size:13.5px; overflow-wrap:anywhere}
+.trash-row .ts{font-size:11.5px; color:var(--muted)}
+.trash-row button{border:1px solid var(--accent); color:var(--accent); background:none;
+  border-radius:8px; padding:5px 10px; font-size:12.5px; font-weight:600; white-space:nowrap}
+
 .scrim{position:fixed; inset:0; background:rgba(10,20,17,.45); z-index:40}
 .sheet{position:fixed; left:0; right:0; bottom:0; z-index:41; background:var(--surface);
   border-radius:18px 18px 0 0; padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
@@ -213,6 +227,8 @@ h2.sec span{font-family:"Golos Text",sans-serif; letter-spacing:0; text-transfor
 <div class="wrap"><main id="view"></main></div>
 
 <button class="fab" id="fab" aria-label="Добавить">+</button>
+
+<div class="undo" id="undo" hidden></div>
 
 <nav class="tabs" role="tablist">
   <button role="tab" id="tab-week"  aria-selected="true"><span class="ic">▤</span>Неделя</button>
@@ -342,12 +358,53 @@ function put(coll, id, data){
   if(CS) CS.setItem(PREFIX[coll]+id, JSON.stringify(data), function(){});
   else lsWrite();
 }
-function drop(coll, id){
+/* Deleting marks the record instead of erasing it, so a wrong tap is always
+   recoverable — from the undo bar straight away, or from the bin in settings
+   for the next 30 days. hardDrop is the only thing that really erases. */
+function hardDrop(coll, id){
   S[coll]=S[coll].filter(function(x){ return x.id!==id; });
   render();
   if(CS) CS.removeItem(PREFIX[coll]+id, function(){});
   else lsWrite();
 }
+function findRow(coll, id){
+  for(var i=0;i<S[coll].length;i++) if(S[coll][i].id===id) return S[coll][i];
+  return null;
+}
+function drop(coll, id){
+  var row=findRow(coll,id); if(!row) return;
+  var body=Object.assign({}, row); delete body.id;
+  body.deleted=Date.now();
+  put(coll, id, body);
+  showUndo(coll, id);
+}
+function undelete(coll, id){
+  var row=findRow(coll,id); if(!row) return;
+  var body=Object.assign({}, row); delete body.id; delete body.deleted;
+  put(coll, id, body);
+}
+function live(coll){ return S[coll].filter(function(x){ return !x.deleted; }); }
+function trashed(){
+  var out=[];
+  COLLS.forEach(function(c){ S[c].forEach(function(x){ if(x.deleted) out.push({coll:c,row:x}); }); });
+  out.sort(function(a,b){ return (b.row.deleted||0)-(a.row.deleted||0); });
+  return out;
+}
+function purgeOld(){
+  var cut=Date.now()-30*86400000;
+  COLLS.forEach(function(c){
+    S[c].filter(function(x){ return x.deleted && x.deleted<cut; })
+        .forEach(function(x){ hardDrop(c, x.id); });
+  });
+}
+function rowTitle(coll, r){
+  if(coll==="opens") return r.text||"Пункт";
+  if(coll==="fixed"||coll==="vars") return (r.label||"Расход")+" · "+money(r.amount)+" ₽";
+  if(coll==="aways") return "Отъезд: "+(r.place||"—");
+  if(coll==="rules") return (r.title||"Занятие")+" · в сетке";
+  return (r.title||"Запись")+(r.date?" · "+r.date:"");
+}
+var COLL_RU={rules:"сетка",acts:"записи",fixed:"постоянные",vars:"разовые",aways:"отъезды",opens:"открытое"};
 function saveCfg(){
   render();
   if(CS) CS.setItem("cfg", JSON.stringify(S.cfg), function(){});
@@ -357,13 +414,14 @@ function saveCfg(){
 /* ===== derived: what happens on a date ===== */
 function occurrences(dateStr){
   var d=fromYmd(dateStr), dow=(d.getDay()+6)%7, out=[];
-  S.rules.forEach(function(r){
+  var acts=live("acts");
+  live("rules").forEach(function(r){
     if(r.active===false) return;
     if(!(r.days||[]).some(function(x){ return +x===dow; })) return;
     if(r.from && dateStr < r.from) return;
     if(r.to && dateStr > r.to) return;
     var act=null;
-    for(var i=0;i<S.acts.length;i++) if(S.acts[i].ruleId===r.id && S.acts[i].date===dateStr){ act=S.acts[i]; break; }
+    for(var i=0;i<acts.length;i++) if(acts[i].ruleId===r.id && acts[i].date===dateStr){ act=acts[i]; break; }
     out.push({
       kind:"rule", ruleId:r.id, actId:act?act.id:null,
       person:r.person, type:r.type, title:r.title, place:r.place,
@@ -371,7 +429,7 @@ function occurrences(dateStr){
       result:act?act.result:"", note:act?act.note:""
     });
   });
-  S.acts.forEach(function(a){
+  acts.forEach(function(a){
     if(a.ruleId) return;
     if(a.date!==dateStr) return;
     out.push({kind:"one", actId:a.id, person:a.person, type:a.type, title:a.title,
@@ -381,7 +439,7 @@ function occurrences(dateStr){
   return out;
 }
 function awaysOn(dateStr){
-  return S.aways.filter(function(a){ return a.from<=dateStr && dateStr<=a.to; });
+  return live("aways").filter(function(a){ return a.from<=dateStr && dateStr<=a.to; });
 }
 
 /* ===== render ===== */
@@ -497,8 +555,9 @@ function renderMoney(){
   document.getElementById("pm").onclick=function(){ S.monthCursor=new Date(mc.getFullYear(),mc.getMonth()-1,1); render(); };
   document.getElementById("nm").onclick=function(){ S.monthCursor=new Date(mc.getFullYear(),mc.getMonth()+1,1); render(); };
 
-  var fixSum=0; S.fixed.forEach(function(f){ fixSum += +f.amount||0; });
-  var monthVars=S.vars.filter(function(v){ return String(v.date||"").slice(0,7)===key; });
+  var liveFixed=live("fixed");
+  var fixSum=0; liveFixed.forEach(function(f){ fixSum += +f.amount||0; });
+  var monthVars=live("vars").filter(function(v){ return String(v.date||"").slice(0,7)===key; });
   var varSum=0; monthVars.forEach(function(v){ varSum += +v.amount||0; });
   var total=fixSum+varSum;
   var fp = total ? Math.round(fixSum/total*100) : 100;
@@ -514,8 +573,8 @@ function renderMoney(){
   '</div>';
 
   html+='<h2 class="sec">Постоянные<span>'+money(fixSum)+' ₽/мес</span></h2><div class="mlist">';
-  if(!S.fixed.length) html+='<div class="empty" style="margin-top:8px">Пока пусто</div>';
-  S.fixed.slice().sort(function(a,b){ return (+b.amount||0)-(+a.amount||0); }).forEach(function(f){
+  if(!liveFixed.length) html+='<div class="empty" style="margin-top:8px">Пока пусто</div>';
+  liveFixed.slice().sort(function(a,b){ return (+b.amount||0)-(+a.amount||0); }).forEach(function(f){
     var paid = f.paidThrough && f.paidThrough>=key;
     html+='<button class="mrow'+(paid?" paid":"")+'" data-fix="'+esc(f.id)+'">'+
       '<span class="stripe" style="background:'+pColor(f.person)+'"></span>'+
@@ -565,7 +624,8 @@ function renderWins(){
   wireWho();
   var yStart = S.cfg.yearStart || (new Date().getMonth()>=8
       ? new Date().getFullYear()+"-09-01" : (new Date().getFullYear()-1)+"-09-01");
-  var comps = S.acts.filter(function(a){
+  var liveActs = live("acts");
+  var comps = liveActs.filter(function(a){
     return a.type==="competition" && a.date>=yStart && passFilter(a.person);
   }).sort(function(a,b){ return a.date<b.date?1:-1; });
 
@@ -573,7 +633,7 @@ function renderWins(){
   var ps = people().filter(function(p){ return passFilter(p.id); });
   html+='<div>';
   ps.forEach(function(p,i){
-    var mine=S.acts.filter(function(a){ return a.person===p.id && a.date>=yStart; });
+    var mine=liveActs.filter(function(a){ return a.person===p.id && a.date>=yStart; });
     var comp=mine.filter(function(a){return a.type==="competition";}).length;
     var ind =mine.filter(function(a){return a.type==="individual";}).length;
     var don =mine.filter(function(a){return a.status==="done";}).length;
@@ -606,9 +666,9 @@ function renderWins(){
 /* ---- open questions ---- */
 function renderOpen(){
   subnavEl.innerHTML="";
-  var html="";
-  if(!S.opens.length) html+='<div class="empty"><b>Ничего не висит</b>Нажмите «+», чтобы записать нерешённый вопрос.</div>';
-  S.opens.slice().sort(function(a,b){ return (a.done?1:0)-(b.done?1:0); }).forEach(function(o){
+  var html="", liveOpens=live("opens");
+  if(!liveOpens.length) html+='<div class="empty"><b>Ничего не висит</b>Нажмите «+», чтобы записать нерешённый вопрос.</div>';
+  liveOpens.slice().sort(function(a,b){ return (a.done?1:0)-(b.done?1:0); }).forEach(function(o){
     html+='<button class="todo'+(o.done?" done":"")+'" data-open="'+esc(o.id)+'">'+
       '<span class="box">'+(o.done?"✓":"")+'</span><span class="tx">'+esc(o.text)+'</span></button>';
   });
@@ -623,6 +683,24 @@ function renderOpen(){
     b.oncontextmenu=function(e){ e.preventDefault();
       confirmAsk("Удалить пункт?", function(){ drop("opens", b.getAttribute("data-open")); }); };
   });
+}
+
+/* ===== undo bar ===== */
+var undoTimer=null;
+function hideUndo(){
+  var el=document.getElementById("undo");
+  if(el){ el.hidden=true; el.innerHTML=""; }
+  if(undoTimer){ clearTimeout(undoTimer); undoTimer=null; }
+}
+function showUndo(coll, id){
+  var el=document.getElementById("undo"); if(!el) return;
+  el.innerHTML='<span>Удалено. Лежит в корзине.</span><button id="undoBtn">Вернуть</button>';
+  el.hidden=false;
+  document.getElementById("undoBtn").onclick=function(){
+    undelete(coll, id); hideUndo(); haptic("medium");
+  };
+  if(undoTimer) clearTimeout(undoTimer);
+  undoTimer=setTimeout(hideUndo, 12000);
 }
 
 /* ===== sheets ===== */
@@ -840,8 +918,28 @@ function openChooser(){
 }
 
 /* ===== settings: import / export ===== */
+function trashHtml(){
+  var t=trashed();
+  var h='<h2 class="sec" style="margin-top:18px">Корзина<span>'+(t.length?t.length+' шт.':'пусто')+'</span></h2>';
+  if(!t.length){
+    return h+'<div class="hint" style="margin-top:8px">Удалённое попадает сюда и хранится 30 дней. Пока ничего нет.</div>';
+  }
+  h+='<div style="margin-top:9px">';
+  t.slice(0,40).forEach(function(it){
+    var days=Math.floor((Date.now()-(it.row.deleted||0))/86400000);
+    h+='<div class="trash-row">'+
+      '<span class="tw"><span class="tt">'+esc(rowTitle(it.coll,it.row))+'</span>'+
+        '<span class="ts">'+esc(COLL_RU[it.coll]||it.coll)+' · удалено '+(days?days+' дн. назад':'сегодня')+'</span></span>'+
+      '<button data-rest="'+esc(it.coll)+'|'+esc(it.row.id)+'">Вернуть</button>'+
+    '</div>';
+  });
+  h+='</div>';
+  if(t.length>1) h+='<div class="sheet-actions" style="margin-top:4px"><button class="btn" id="restAll" style="flex:1">Вернуть всё</button></div>';
+  return h;
+}
+
 function openSettings(){
-  var counts = COLLS.map(function(c){ return c+": "+S[c].length; }).join(", ");
+  var counts = COLLS.map(function(c){ return c+": "+live(c).length; }).join(", ");
   var inner=
     '<div class="hint">Данные хранятся в вашем Telegram и видны только вам. В самом приложении их нет.</div>'+
     '<div class="field"><label for="imp">Вставить настройку</label>'+
@@ -853,9 +951,23 @@ function openSettings(){
     '<div class="field" style="margin-top:12px"><label for="exp">Выгрузка</label>'+
       '<textarea id="exp" readonly placeholder="Нажмите «Показать мои данные»"></textarea></div>'+
     '<div class="hint">Сейчас записано — '+esc(counts)+'</div>'+
-    '<div class="sheet-actions" style="margin-top:0"><button class="btn danger" id="wipe" style="flex:1">Стереть всё</button></div>';
+    trashHtml()+
+    '<div class="sheet-actions" style="margin-top:14px"><button class="btn danger" id="wipe" style="flex:1">Стереть всё</button></div>';
 
   sheet("Настройки", inner, null, null);
+
+  Array.prototype.forEach.call(modal.querySelectorAll("[data-rest]"), function(b){
+    b.onclick=function(){
+      var p=b.getAttribute("data-rest").split("|");
+      undelete(p[0], p[1]); haptic("medium");
+      closeSheet(); openSettings();
+    };
+  });
+  var ra=document.getElementById("restAll");
+  if(ra) ra.onclick=function(){
+    trashed().forEach(function(it){ undelete(it.coll, it.row.id); });
+    haptic("medium"); closeSheet(); openSettings();
+  };
 
   document.getElementById("doImp").onclick=function(){
     var raw=document.getElementById("imp").value.trim();
@@ -873,9 +985,9 @@ function openSettings(){
     document.getElementById("exp").value=JSON.stringify(o);
   };
   document.getElementById("wipe").onclick=function(){
-    confirmAsk("Стереть все данные приложения?", function(){
-      COLLS.forEach(function(c){ S[c].slice().forEach(function(x){ drop(c, x.id); }); });
-      S.cfg={people:[], school:null}; saveCfg(); closeSheet();
+    confirmAsk("Убрать все записи в корзину? Вернуть можно будет оттуда.", function(){
+      COLLS.forEach(function(c){ live(c).forEach(function(x){ drop(c, x.id); }); });
+      hideUndo(); closeSheet();
     });
   };
 }
@@ -912,7 +1024,7 @@ document.getElementById("fab").onclick=function(){
 document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeSheet(); });
 
 S.ready=true; render(); S.ready=false;
-load(function(){ S.ready=true; render(); });
+load(function(){ S.ready=true; purgeOld(); render(); });
 </script>
 </body>
 </html>
