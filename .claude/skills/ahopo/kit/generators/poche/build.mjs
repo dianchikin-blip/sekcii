@@ -3,6 +3,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+// Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const W = 1080, HH = 1920;
 const S = 72, PX0 = 88, PY0 = 330 + 13.3 * S;
 const X = (x) => PX0 + x * S, Y = (y) => PY0 - y * S;
@@ -91,17 +94,17 @@ const north = `<g>
   <path d="M ${nx} ${ny - 36} L ${nx + 13} ${ny + 18} L ${nx} ${ny + 8} Z" fill="#121212"/>
   <path d="M ${nx} ${ny - 36} L ${nx - 13} ${ny + 18} L ${nx} ${ny + 8} Z" fill="#FFFFFF" stroke="#121212" stroke-width="1.2"/>
   <text x="${nx}" y="${ny - 48}" font-size="20" font-weight="700" text-anchor="middle" fill="#121212">С</text>
-  <text x="${nx}" y="${ny + 64}" font-size="13" font-weight="700" text-anchor="middle" fill="#9A4322">УСЛОВНО</text>
+  ${CLIENT ? "" : `<text x="${nx}" y="${ny + 64}" font-size="13" font-weight="700" text-anchor="middle" fill="#9A4322">УСЛОВНО</text>`}
 </g>`;
 const stamp = `<g id="pc-stamp">
   <rect x="${SB.x}" y="${SB.y}" width="${SB.w}" height="${SB.h}" fill="#FFFFFF" stroke="#121212" stroke-width="2"/>
   <line x1="${SB.x}" y1="${SB.y + 118}" x2="${SB.x + SB.w}" y2="${SB.y + 118}" stroke="#121212" stroke-width="1"/>
   <line x1="${nx - 64}" y1="${SB.y + 118}" x2="${nx - 64}" y2="${SB.y + SB.h}" stroke="#121212" stroke-width="1"/>
-  <text x="${SB.x + 28}" y="${SB.y + 44}" font-size="15" font-weight="700" letter-spacing="2" fill="#8A6230">${plan.meta.code} · ПОШЕ-ПЛАН</text>
+  <text x="${SB.x + 28}" y="${SB.y + 44}" font-size="15" font-weight="700" letter-spacing="2" fill="#8A6230">${CLIENT ? "ПЛАН ДОМА" : `${plan.meta.code} · ПОШЕ-ПЛАН`}</text>
   <text x="${SB.x + 28}" y="${SB.y + 84}" font-size="30" font-weight="700" fill="#121212">${plan.meta.title}</text>
   <text x="${SB.x + 28}" y="${SB.y + 106}" font-size="16" fill="#5E574E">${plan.meta.address_short}</text>
-  <text x="${SB.x + 28}" y="${SB.y + 152}" font-size="21" font-weight="700" fill="#121212">План первого этажа · поше</text>
-  <text x="${SB.x + 28}" y="${SB.y + 180}" font-size="16" fill="#5E574E">${fmt(plan.area_summary.total_table_stated)} м² по экспликации · ${plan.rooms.length} помещений</text>
+  <text x="${SB.x + 28}" y="${SB.y + 152}" font-size="21" font-weight="700" fill="#121212">${CLIENT ? "План первого этажа" : "План первого этажа · поше"}</text>
+  <text x="${SB.x + 28}" y="${SB.y + 180}" font-size="16" fill="#5E574E">${fmt(plan.area_summary.total_table_stated)} м² ${CLIENT ? "по проекту" : "по экспликации"} · ${plan.rooms.length} помещений</text>
   <text x="${SB.x + 28}" y="${SB.y + 216}" font-size="15" fill="#5E574E">Масштаб графический</text>
   ${scaleBar.join("\n")}
   ${north}
@@ -118,6 +121,7 @@ const html = `<template>
     #pc-note { position: absolute; left: 64px; width: 360px; top: ${PY0 + 128}px; font-size: 18px; line-height: 1.5; color: #5E574E; }
     #pc-note b { color: #121212; }
     #pc-note .c { color: #9A4322; font-weight: 700; }
+    ${CLIENT ? "#pc-note { display: none; }" : ""}
   </style>
   <div id="root" data-composition-id="poche" data-width="1080" data-height="1920">
     <svg id="pc-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
@@ -134,9 +138,9 @@ const html = `<template>
       ${stamp}
     </svg>
     <div id="pc-head">
-      <div class="k">${plan.meta.kicker}</div>
-      <div class="t">Поше-план</div>
-      <div class="d">Стены — чёрным, проёмы — светлые, двери — дуги</div>
+      <div class="k">${KICKER}</div>
+      <div class="t">${CLIENT ? "План дома" : "Поше-план"}</div>
+      <div class="d">${CLIENT ? "Стены, окна и двери" : "Стены — чёрным, проёмы — светлые, двери — дуги"}</div>
     </div>
     <div id="pc-note"><b>${plan.walls.length} стен</b> и колонна крыльца, ${plan.openings.filter((o) => o.type === "window" || o.type === "fixed_glazing").length} окон, ${plan.openings.filter((o) => /door/.test(o.type)).length} дверей.<br>Пунктир — крыльцо.<br><span class="c">Условно:</span> север, ширины дверей по масштабу.</div>
   </div>

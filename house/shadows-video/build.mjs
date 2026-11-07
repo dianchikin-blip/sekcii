@@ -4,6 +4,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+// Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const SS = plan.shadow_study;
 const LAT = plan.site.latitude, LON = plan.site.longitude, TZ = SS.tz_hours;
 const [YY, MM, DD] = SS.date.split("-").map(Number);
@@ -91,7 +94,7 @@ const tagFor = (fz, i) => {
     <rect x="${f(tx - cw / 2)}" y="${f(ty - 50)}" width="${cw}" height="96" rx="10" fill="#FFFFFF" stroke="${fz.c.col}" stroke-width="2"/>
     <rect x="${f(tx - cw / 2)}" y="${f(ty - 50)}" width="10" height="96" fill="${fz.c.col}" fill-opacity="0.55"/>
     <text x="${f(tx)}" y="${f(ty - 16)}" font-size="28" font-weight="700" text-anchor="middle" fill="${fz.c.ink}">${String(fz.h).padStart(2, "0")}:00</text>
-    <text x="${f(tx)}" y="${f(ty + 10)}" font-size="17" text-anchor="middle" fill="#2A2724">высота ${fmt(fz.s.alt)}° · азимут ${fmt(fz.s.az, 0)}°</text>
+    <text x="${f(tx)}" y="${f(ty + 10)}" font-size="17" text-anchor="middle" fill="#2A2724">высота солнца ${fmt(fz.s.alt)}°${CLIENT ? "" : ` · азимут ${fmt(fz.s.az, 0)}°`}</text>
     <text x="${f(tx)}" y="${f(ty + 33)}" font-size="17" font-weight="700" text-anchor="middle" fill="#2A2724">тень ${fmt(fz.L, 2)} м</text>
   </g>`;
 };
@@ -112,12 +115,12 @@ for (const r of plan.rooms) {
 const NX = 84, NY = 296;
 const north = `<g><path d="M ${NX} ${NY - 34} L ${NX + 12} ${NY + 14} L ${NX} ${NY + 6} Z" fill="#2A2724"/><path d="M ${NX} ${NY - 34} L ${NX - 12} ${NY + 14} L ${NX} ${NY + 6} Z" fill="#FFFFFF" stroke="#2A2724"/>
   <text x="${NX}" y="${NY - 42}" font-size="18" font-weight="700" text-anchor="middle" fill="#2A2724">С</text>
-  <text x="${NX}" y="${NY + 34}" font-size="12" font-weight="700" text-anchor="middle" fill="#9A4322">УСЛОВНО</text></g>`;
+  ${CLIENT ? "" : `<text x="${NX}" y="${NY + 34}" font-size="12" font-weight="700" text-anchor="middle" fill="#9A4322">УСЛОВНО</text>`}</g>`;
 
 // таблица
 const tableRows = rows.map((r) => {
   const fz = SS.freeze.includes(r.h) ? FREEZE[r.h] : null;
-  return `<div class="tr" id="row-${r.h}"><span>${fz ? `<i style="background:${fz.col}"></i>` : "<i></i>"}${String(r.h).padStart(2, "0")}:00</span><span>${fmt(r.alt)}°</span><span>${fmt(r.az, 0)}°</span><span>${fmt(r.L, 2)} м</span></div>`;
+  return `<div class="tr" id="row-${r.h}"><span>${fz ? `<i style="background:${fz.col}"></i>` : "<i></i>"}${String(r.h).padStart(2, "0")}:00</span><span>${fmt(r.alt)}°</span>${CLIENT ? "" : `<span>${fmt(r.az, 0)}°</span>`}<span>${fmt(r.L, 2)} м</span></div>`;
 }).join("");
 const CY = Y(by0) + 40, TY = CY + 150;
 
@@ -145,6 +148,7 @@ const html = `<template>
     #sh-foot .s b { color: #2A2724; font-size: 26px; }
     #sh-note { position: absolute; left: 64px; right: 64px; bottom: 150px; font-size: 16px; color: #5E574E; line-height: 1.45; }
     #sh-note b { color: #9A4322; }
+    ${CLIENT ? "#sh-note { display: none; } .th, .tr { grid-template-columns: 1.1fr 1fr 1fr; }" : ""}
   </style>
   <div id="root" data-composition-id="shadows" data-width="1080" data-height="1920">
     <svg id="sh-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
@@ -155,12 +159,12 @@ const html = `<template>
       ${north}
     </svg>
     <div id="sh-head">
-      <div class="k">${plan.meta.kicker}</div>
-      <div class="t">Этюд теней</div>
-      <div class="d">Стены ${fmt(HWALL, 2)} м <span style="color:#9A4322;font-weight:700">условно</span> · ${String(H0).padStart(2, "0")}:00–${H1}:00</div>
+      <div class="k">${KICKER}</div>
+      <div class="t">${CLIENT ? "Солнце и тени" : "Этюд теней"}</div>
+      <div class="d">${CLIENT ? `Как солнце обходит дом · ${DATE_RU}` : `Стены ${fmt(HWALL, 2)} м <span style="color:#9A4322;font-weight:700">условно</span>`} · ${String(H0).padStart(2, "0")}:00–${H1}:00</div>
     </div>
     <div id="sh-clock"><div class="tm" id="sh-time">${String(H0).padStart(2, "0")}:00</div><div class="sv" id="sh-sv">—</div></div>
-    <div id="sh-table"><div class="th"><span>Время</span><span>Высота</span><span>Азимут</span><span>Тень</span></div>${tableRows}</div>
+    <div id="sh-table"><div class="th"><span>Время</span><span>Высота солнца</span>${CLIENT ? "" : "<span>Азимут</span>"}<span>Длина тени</span></div>${tableRows}</div>
     <div id="sh-note"><b>Условно:</b> высота стен ${fmt(HWALL, 2)} м, крыша и свесы не учтены, север ≈ верх листа, координаты города. Тень = ${fmt(HWALL, 2)} / tg(высоты солнца).</div>
     <div id="sh-foot"><div class="c">${plan.site.city}, ${DATE_RU} ${YY}</div><div class="s">восход ${hhmm(day.sunrise)} · полдень ${hhmm(day.noon)}<br>закат <b>${hhmm(day.sunset)}</b> ${SS.tz_name}</div></div>
   </div>
@@ -192,7 +196,7 @@ const html = `<template>
         }
         const mins = Math.round(hour * 60);
         tEl.textContent = String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
-        svEl.textContent = "высота " + fmt(s.alt, 1) + "° · азимут " + fmt(s.az, 0) + "° · тень " + fmt(L, 2) + " м";
+        svEl.textContent = "высота " + fmt(s.alt, 1) + "°" + (${CLIENT} ? "" : " · азимут " + fmt(s.az, 0) + "°") + " · тень " + fmt(L, 2) + " м";
         const cur = Math.min(H1, Math.floor(hour + 1e-6));
         for (const h in rowsEl) rowsEl[h].classList.toggle("on", +h === cur);
       }

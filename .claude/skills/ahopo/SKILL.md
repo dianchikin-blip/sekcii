@@ -1,6 +1,6 @@
 ---
 name: ahopo
-description: "Ахопо — полный архитектурный пакет по плану дома. Use when Diana attaches a house floor plan (image or PDF) and writes /ахопо, /ahopo, «ахопо» or asks to «собрать чертежи по плану». Reads the plan into plan.json (the single source of truth), checks room areas against the drawing, asks what is unknown, then builds six 3-second 1080×1920 HyperFrames videos drawn in SVG (exploded axonometry, section with sun and cross-ventilation, poché plan, zoning, routes, shadow study) and an A3 sheet (PDF + PNG) from their last frames."
+description: "Ахопо — полный архитектурный пакет по плану дома. Use when Diana attaches a house floor plan (image or PDF) and writes /ахопо, /ahopo, «ахопо» or asks to «собрать чертежи по плану». Reads the plan into plan.json (the single source of truth), checks room areas against the drawing, asks what is unknown, then builds six 3-second 1080×1920 HyperFrames videos drawn in SVG (exploded axonometry, section with sun and cross-ventilation, poché plan, zoning, routes, shadow study) an A3 sheet (PDF + PNG) from their last frames and a ~30 s montage — each in a technical and a clean client version."
 ---
 
 # Ахопо — чертежи дома из одного plan.json
@@ -47,7 +47,7 @@ bash .claude/skills/ahopo/kit/new_project.sh <папка>   # например h
 4. **Проверь геометрию глазами.** Запусти `python3 render_plan.py plan.json plan_check.svg`, отрендери PNG через Playwright и сравни с оригиналом.
 5. **Сверь площади.** Таблица: по плану / посчитано / разница. Нестыковки цепочек размеров перечисли в `discrepancies_dimensions`.
 6. **Допущения** — в `assumptions` с полем `question` для Дианы.
-7. **Данные для роликов:** `site` (город, широта, долгота), `sections[0].path` (линия разреза), `zones` и `routes`, `zoning`, `shadow_study`, `render_hints` (точки подписей и смещения бейджей дверей, необязательно), `meta.kicker/title/code/address_short`.
+7. **Данные для роликов:** `meta.client_kicker` и `meta.client_disclaimer` (для клиентской версии), `A-roof.value.ridge_x/ridge_z` (конёк двускатной крыши в аксонометрии), `site` (город, широта, долгота), `sections[0].path` (линия разреза), `zones` и `routes`, `zoning`, `shadow_study`, `render_hints` (точки подписей и смещения бейджей дверей, необязательно), `meta.kicker/title/code/address_short`.
 
 Покажи Диане сверку площадей и вопросы. Дальше иди по её ответам или с пометками «условно».
 
@@ -87,7 +87,37 @@ node sheet/build_sheet.mjs     # из корня проекта
 
 Скрипт возьмёт последний кадр каждого ролика и разложит их в сетку 3×2 на А3, каждый в своей рамке и со своей линейкой. Внизу общий штамп: название дома, список чертежей, линейка, перечень «взято условно» (собирается из plan.json). На выходе `sheet/sheet.pdf` (А3, 1 страница) и `sheet/sheet.png` (≈ 290 dpi). Открой PNG и проверь глазами.
 
-## Шаг 5. Выдача
+## Шаг 5. Монтаж
+
+```bash
+bash .claude/skills/ahopo/kit/make_montage.sh <папка>            # техническая версия → montage-video/montage.mp4
+bash .claude/skills/ahopo/kit/make_montage.sh <папка> client     # клиентская версия → montage-video/montage-client.mp4
+```
+
+Монтаж длится ~30 секунд: титул со списком чертежей → шесть роликов (каждый держит последний кадр 0,9 с, переходы плавные, сверху прогресс по главам) → лист А3. Звука в монтаже нет. Музыку добавляй, только если Диана пришлёт трек или попросит.
+
+## Две версии: для клиента и для архитектора
+
+Каждый генератор умеет собирать две версии из одного plan.json:
+
+- **техническая** (по умолчанию) — со всеми отметками, «условно», азимутами, шириной дверей, ссылками на plan.json;
+- **клиентская** — `AUDIENCE=client node build.mjs`, рендер в `<ролик>-client.mp4`, лист — `AUDIENCE=client node sheet/build_sheet.mjs` (→ `sheet-client.pdf/png`).
+
+Что убирается в клиентской версии:
+- высотные отметки и толщины стен в разрезе;
+- «окно/дверь за разрезом»;
+- формулы и широта;
+- азимут;
+- бейджи и ширины дверей;
+- сноски «условно» на каждом ролике;
+- упоминания plan.json, HyperFrames и шифра проекта;
+- слова «поше», «экспликация», «аксонометрия».
+
+Вместо всех «условно» клиент видит одну честную строку `meta.client_disclaimer` — в финале монтажа и в штампе листа. Шапка берётся из `meta.client_kicker`.
+
+Если Диана не сказала, для кого версия, делай обе. Для соцсетей и продаж нужна клиентская.
+
+## Шаг 6. Выдача
 
 1. Закоммить и запушь в рабочую ветку.
 2. Отправь Диане MP4 и лист (PDF + PNG) через SendUserFile.

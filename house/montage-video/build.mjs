@@ -3,6 +3,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const SFX = CLIENT ? "-client" : "";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const CH = [
   { id: "axo", name: "Разнесённая аксонометрия" },
   { id: "section", name: "Разрез, солнце, проветривание" },
@@ -11,6 +14,10 @@ const CH = [
   { id: "routes", name: "Маршруты по дому" },
   { id: "shadows", name: "Этюд теней" },
 ];
+if (CLIENT) {
+  const N = { axo: "Дом по слоям", section: "Солнце и воздух в разрезе", poche: "План дома", zoning: "Зонирование", routes: "Маршруты по дому", shadows: "Солнце и тени" };
+  for (const c of CH) c.name = N[c.id] || c.name;
+}
 const INTRO = 3.3, CLIP = 3.0, HOLD = 0.9, STEP = 3.7, FADE = 0.25, OUTRO = 4.8;
 CH.forEach((c, i) => (c.s = INTRO - 0.2 + i * STEP));
 const lastEnd = CH.at(-1).s + CLIP + HOLD;
@@ -18,9 +25,9 @@ const OUT0 = lastEnd - 0.2, TOTAL = +(OUT0 + OUTRO).toFixed(2);
 
 let z = 2;
 const media = CH.map((c) => `
-      <video id="v-${c.id}" class="clip" src="assets/${c.id}.mp4" muted playsinline data-start="${c.s.toFixed(2)}" data-duration="${CLIP}" data-track-index="${1 + (z % 2)}"
+      <video id="v-${c.id}" class="clip" src="assets/${c.id}${SFX}.mp4" muted playsinline data-start="${c.s.toFixed(2)}" data-duration="${CLIP}" data-track-index="${1 + (z % 2)}"
         style="position:absolute;left:0;top:0;width:1080px;height:1920px;object-fit:contain;z-index:${z++}"></video>
-      <img id="h-${c.id}" class="clip" src="assets/${c.id}-last.png" alt="" data-start="${(c.s + CLIP).toFixed(2)}" data-duration="${HOLD}" data-track-index="${3 + (z % 3)}"
+      <img id="h-${c.id}" class="clip" src="assets/${c.id}${SFX}-last.png" alt="" data-start="${(c.s + CLIP).toFixed(2)}" data-duration="${HOLD}" data-track-index="${3 + (z % 3)}"
         style="position:absolute;left:0;top:0;width:1080px;height:1920px;object-fit:contain;z-index:${z++}">`).join("");
 
 const html = `<!doctype html>
@@ -105,9 +112,9 @@ fs.writeFileSync(new URL("./compositions/intro.html", import.meta.url), `<templa
   </style>
   <div id="root" data-composition-id="intro" data-width="1080" data-height="1920">
     <div id="in-box">
-      <div class="k">${plan.meta.kicker}</div>
+      <div class="k">${KICKER}</div>
       <div class="t">${plan.meta.title}</div>
-      <div class="d">Шесть чертежей из одного plan.json · ${area} м²</div>
+      <div class="d">${CLIENT ? `Ваш дом за 30 секунд · ${area} м²` : `Шесть чертежей из одного plan.json · ${area} м²`}</div>
       <div class="list">${CH.map((c, i) => `<div class="li"><b>0${i + 1}</b>${c.name}</div>`).join("")}</div>
     </div>
   </div>
@@ -132,9 +139,9 @@ fs.writeFileSync(new URL("./compositions/outro.html", import.meta.url), `<templa
     #out-foot { position: absolute; left: 80px; right: 80px; bottom: 110px; font-size: 28px; color: #5E574E; line-height: 1.45; }
   </style>
   <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
-    <div id="out-cap"><div class="k">ЛИСТ А3 · ${plan.meta.code}</div><div class="t">Всё на одном листе</div></div>
-    <img id="out-sheet" src="assets/sheet.png" alt="Лист А3">
-    <div id="out-foot">Аксонометрия, разрез, поше-план, зонирование, маршруты и тени — собраны по одному плану.<br>Условное отмечено на каждом чертеже.</div>
+    <div id="out-cap"><div class="k">${CLIENT ? "ЛИСТ А3" : `ЛИСТ А3 · ${plan.meta.code}`}</div><div class="t">Всё на одном листе</div></div>
+    <img id="out-sheet" src="assets/sheet${SFX}.png" alt="Лист А3">
+    <div id="out-foot">${CLIENT ? `Всё — по одному плану дома.<br>${plan.meta.client_disclaimer}` : "Аксонометрия, разрез, поше-план, зонирование, маршруты и тени — собраны по одному плану.<br>Условное отмечено на каждом чертеже."}</div>
   </div>
   <script>
     (function () {

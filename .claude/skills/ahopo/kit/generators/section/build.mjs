@@ -3,6 +3,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+// Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const A = Object.fromEntries(plan.assumptions.map((a) => [a.id, a]));
 const H = A["A-heights"].value;
 const FF = H.finished_floor;                 // +0,120 — по разрезу
@@ -143,8 +146,8 @@ for (const o of plan.openings) {
   beyond.push(`<rect x="${f(X(yb))}" y="${f(Z(z1))}" width="${f((yb - ya) * S)}" height="${f((z1 - z0) * S)}" fill="none" stroke="#5C564E" stroke-width="1.2"/>`);
   if (isWin) beyond.push(`<line x1="${f(X(ym))}" y1="${f(Z(z0))}" x2="${f(X(ym))}" y2="${f(Z(z1))}" stroke="#5C564E" stroke-width="0.8"/>`);
   else beyond.push(`<line x1="${f(X(yb))}" y1="${f(Z(z1))}" x2="${f(X(ya) - 4)}" y2="${f(Z((z0 + z1) / 2))}" stroke="#5C564E" stroke-width="0.8" stroke-dasharray="4 3"/>`);
-  if (isWin) beyond.push(`<text x="${f(X(ym))}" y="${f(Z(z0) + 17)}" font-size="12" text-anchor="middle" fill="#5C564E">окно за разрезом</text>`);
-  else beyond.push(`<text x="${f(X(ym))}" y="${f(Z(z1) - 5)}" font-size="12" text-anchor="middle" fill="#5C564E">дверь за разрезом</text>`);
+  if (isWin && !CLIENT) beyond.push(`<text x="${f(X(ym))}" y="${f(Z(z0) + 17)}" font-size="12" text-anchor="middle" fill="#5C564E">окно за разрезом</text>`);
+  else if (!CLIENT) beyond.push(`<text x="${f(X(ym))}" y="${f(Z(z1) - 5)}" font-size="12" text-anchor="middle" fill="#5C564E">дверь за разрезом</text>`);
 }
 // линия потолка/стен за разрезом в каждом помещении
 for (const sp of spaces) beyond.push(`<line x1="${f(X(sp.y1))}" y1="${f(Z(TOP))}" x2="${f(X(sp.y0))}" y2="${f(Z(TOP))}" stroke="#5C564E" stroke-width="0.6"/>`);
@@ -170,12 +173,12 @@ for (let i = 0; i < tk.length; i++) {
   if (i + 1 < tk.length) {
     const d = tk[i + 1] - tk[i];
     const thin = d < 0.6;
-    dims.push(`<text x="${f(X((tk[i] + tk[i + 1]) / 2))}" y="${f(dimY - (thin ? 22 : 8))}" font-size="${thin ? 12 : 16}" text-anchor="middle" fill="#23201C">${fmt(d, d < 1 ? 2 : 2)}</text>`);
+    if (!(CLIENT && thin)) dims.push(`<text x="${f(X((tk[i] + tk[i + 1]) / 2))}" y="${f(dimY - (thin ? 22 : 8))}" font-size="${thin ? 12 : 16}" text-anchor="middle" fill="#23201C">${fmt(d, d < 1 ? 2 : 2)}</text>`);
   }
 }
 dims.push(`<line x1="${f(X(yN) - 10)}" y1="${f(dimY2)}" x2="${f(X(yS) + 10)}" y2="${f(dimY2)}" stroke="#23201C" stroke-width="1"/>`);
 dims.push(tick(yN, dimY2), tick(yS, dimY2));
-dims.push(`<text x="${f(X((yN + yS) / 2))}" y="${f(dimY2 - 8)}" font-size="18" font-weight="700" text-anchor="middle" fill="#23201C">${fmt(yN - yS)} — по линии разреза</text>`);
+dims.push(`<text x="${f(X((yN + yS) / 2))}" y="${f(dimY2 - 8)}" font-size="18" font-weight="700" text-anchor="middle" fill="#23201C">${CLIENT ? `${fmt(yN - yS)} м` : `${fmt(yN - yS)} — по линии разреза`}</text>`);
 // высотные отметки слева
 const levels = [
   [TOP + ROOF_T, "верх плиты", true], [TOP, "верх стен", true], [HEAD, "верх окон", false], [DOOR, "верх дверей", true],
@@ -183,7 +186,7 @@ const levels = [
 ];
 const LX = X(yN) - 14;
 let prevT = -1e9;
-for (const [z, nm, cond] of levels) {
+for (const [z, nm, cond] of (CLIENT ? [] : levels)) {
   const y = Z(z);
   const ty = Math.max(y + 5, prevT + 17); prevT = ty;
   const sign = z > 0 ? "+" : z < 0 ? "" : "±";
@@ -310,6 +313,7 @@ const html = `<template>
     #cut-legend .muted { color: #5E574E; font-size: 17px; }
     #cut-foot { position: absolute; left: 64px; right: 64px; bottom: 70px; font-size: 19px; line-height: 1.45; color: #5E574E; border-top: 1.5px solid #D8D1C5; padding-top: 16px; }
     #cut-foot b { color: #9A4322; }
+    ${CLIENT ? "#cut-foot, #cut-legend .row-cut, .cut-tech { display: none; }" : ""}
   </style>
   <div id="root" data-composition-id="cut" data-width="1080" data-height="1920">
     <svg id="cut-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
@@ -323,7 +327,7 @@ const html = `<template>
       </defs>
       <g id="cut-mini">
         ${mini.join("\n")}
-        <text x="${f(MX(6.28))}" y="${f(MY(13.3) - 14)}" font-size="15" font-weight="700" text-anchor="middle" fill="#23201C">С ↑ <tspan fill="#9A4322" font-size="12">условно</tspan></text>
+        <text x="${f(MX(6.28))}" y="${f(MY(13.3) - 14)}" font-size="15" font-weight="700" text-anchor="middle" fill="#23201C">С ↑${CLIENT ? "" : ` <tspan fill="#9A4322" font-size="12">условно</tspan>`}</text>
       </g>
       <path id="cut-line" d="${miniLine}" fill="none" stroke="#C0392B" stroke-width="3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" stroke-linejoin="round"/>
       <g id="cut-line-ends">${arrowAt(p0)}${arrowAt(pE)}</g>
@@ -338,7 +342,7 @@ const html = `<template>
       ${person}
       <path id="cut-wave" d="${waveD}" fill="none" stroke="#2E6FD8" stroke-width="3.2" stroke-linecap="butt" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
       <path id="cut-wavehead" d="M ${f(endP[0] - 4)} ${f(endP[1])} l 18 -10 l 0 20 z" fill="#2E6FD8"/>
-      <g id="cut-wavelab"><text x="${f(X(10.95))}" y="${f(Z(0.98))}" font-size="15" font-weight="700" text-anchor="middle" fill="#1D52A8">сквозное проветривание</text><text x="${f(X(10.95))}" y="${f(Z(0.98) + 17)}" font-size="13" text-anchor="middle" fill="#1D52A8">двери открыты — условно</text></g>
+      <g id="cut-wavelab"><text x="${f(X(10.95))}" y="${f(Z(0.98))}" font-size="15" font-weight="700" text-anchor="middle" fill="#1D52A8">сквозное проветривание</text><text x="${f(X(10.95))}" y="${f(Z(0.98) + 17)}" font-size="13" text-anchor="middle" fill="#1D52A8">${CLIENT ? "двери открыты" : "двери открыты — условно"}</text></g>
       <g id="cut-sides">
         <text x="${f(X(yN) + 4)}" y="${f(Z(TOP + ROOF_T) - 16)}" font-size="16" font-weight="700" fill="#5E574E">← СЕВЕР</text>
         <text x="${f(X(yS) - 4)}" y="${f(Z(TOP + ROOF_T) - 16)}" font-size="16" font-weight="700" text-anchor="end" fill="#5E574E">ЮГ →</text>
@@ -346,9 +350,9 @@ const html = `<template>
     </svg>
 
     <div id="cut-head">
-      <div class="k">${plan.meta.kicker}</div>
-      <div class="t">Разрез 1-1</div>
-      <div class="d">Ступенчатый: окно на юге → окно на севере, смотрим на восток</div>
+      <div class="k">${KICKER}</div>
+      <div class="t">${CLIENT ? "Дом в разрезе" : "Разрез 1-1"}</div>
+      <div class="d">${CLIENT ? "Солнце и воздух: от южного окна к северному" : "Ступенчатый: окно на юге → окно на севере, смотрим на восток"}</div>
     </div>
 
     <div id="cut-legend">
@@ -358,9 +362,9 @@ const html = `<template>
         <div><b>Зима, 22 декабря — ${fmt(hWinter, 1)}°</b><br>через всю спальню — <b>${fmt(depthW)} м</b></div></div>
       <div class="row"><div class="sw"><svg width="46" height="22"><path d="M2 11 q 5 -8 10 0 t 10 0 t 10 0 t 10 0" fill="none" stroke="#2E6FD8" stroke-width="3"/></svg></div>
         <div><b>Сквозное проветривание</b><br><span class="muted">окно → дверь → коридор → кухня → окно</span></div></div>
-      <div class="row"><div class="sw"><svg width="46" height="22"><rect x="2" y="4" width="42" height="14" fill="#141414"/></svg></div>
+      <div class="row row-cut"><div class="sw"><svg width="46" height="22"><rect x="2" y="4" width="42" height="14" fill="#141414"/></svg></div>
         <div><b>В разрезе</b> <span class="muted">· тонко — за разрезом</span></div></div>
-      <div class="muted">Казань, ${fmt(LAT, 2)}° с. ш. <span class="tag">УСЛОВНО</span><br>полдень: 90° − широта ± 23,44°</div>
+      <div class="muted">${CLIENT ? `${plan.site.city}, солнце в полдень` : `${plan.site.city}, ${fmt(LAT, 2)}° с. ш. <span class="tag">УСЛОВНО</span><br>полдень: 90° − широта ± 23,44°`}</div>
     </div>
 
     <div id="cut-foot"><b>Условно:</b> широта Казани, сторона света, верх стен ${fmt(TOP, 3)}, двери ${fmt(DOOR)}, плоская плита вместо скатной крыши, сечения фундамента, отметка земли, без свеса крыши. Остальное — из plan.json.</div>

@@ -10,7 +10,9 @@ const { chromium } = require("playwright");
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "plan.json"), "utf8"));
 const OUT = path.join(ROOT, "sheet");
-fs.mkdirSync(path.join(OUT, "frames"), { recursive: true });
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const SFX = CLIENT ? "-client" : "";
+fs.mkdirSync(path.join(OUT, "frames" + SFX), { recursive: true });
 
 // чертежи: папка, файл ролика, название; масштаб берём из генератора (const S = …), у аксонометрии масштаба нет
 const DRAWINGS = [
@@ -20,7 +22,9 @@ const DRAWINGS = [
   { dir: "zoning-video", mp4: ["zoning.mp4"], name: "Зонирование" },
   { dir: "routes-video", mp4: ["routes.mp4"], name: "Маршруты по дому" },
   { dir: "shadows-video", mp4: ["shadows.mp4"], name: "Этюд теней" },
-].map((d) => ({ ...d, mp4: d.mp4.find((m) => fs.existsSync(path.join(ROOT, d.dir, m))) })).filter((d) => d.mp4);
+].map((d) => ({ ...d, mp4: (CLIENT ? [d.dir.replace("-video", "") + "-client.mp4"] : d.mp4).find((m) => fs.existsSync(path.join(ROOT, d.dir, m))) })).filter((d) => d.mp4);
+const CLIENT_NAMES = { "axo-video": "Дом по слоям", "section-video": "Дом в разрезе: солнце и воздух", "poche-video": "План дома", "zoning-video": "Зонирование", "routes-video": "Маршруты по дому", "shadows-video": "Солнце и тени" };
+if (CLIENT) for (const d of DRAWINGS) d.name = CLIENT_NAMES[d.dir] || d.name;
 if (plan.shadow_study) {
   const [, mm, dd] = plan.shadow_study.date.split("-").map(Number);
   const MON = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
@@ -28,9 +32,9 @@ if (plan.shadow_study) {
 }
 
 for (const d of DRAWINGS) {
-  const png = path.join(OUT, "frames", `${d.dir}.png`);
+  const png = path.join(OUT, "frames" + SFX, `${d.dir}.png`);
   execFileSync("ffmpeg", ["-v", "error", "-y", "-sseof", "-0.05", "-i", path.join(ROOT, d.dir, d.mp4), "-frames:v", "1", "-update", "1", png]);
-  d.png = `frames/${d.dir}.png`;
+  d.png = `frames${SFX}/${d.dir}.png`;
   const src = fs.readFileSync(path.join(ROOT, d.dir, "build.mjs"), "utf8");
   const m = /const S = (\d+(?:\.\d+)?)/.exec(src);
   d.S = d.noScale || !m ? null : +m[1];
@@ -51,7 +55,7 @@ const cells = DRAWINGS.map((d, i) => `
   <div class="cell">
     <div class="cap"><b>${i + 1}</b>${d.name}</div>
     <div class="frame"><img src="${d.png}"></div>
-    ${bar(d.S)}
+    ${CLIENT ? "" : bar(d.S)}
   </div>`).join("");
 
 const cond = [];
@@ -97,24 +101,24 @@ const html = `<!doctype html><html lang="ru"><head><meta charset="utf-8">
   <div class="grid">${cells}</div>
   <div class="stamp">
     <div>
-      <div class="k">${plan.meta.code} · ЛИСТ ЧЕРТЕЖЕЙ А3</div>
+      <div class="k">${CLIENT ? "ЛИСТ ЧЕРТЕЖЕЙ" : `${plan.meta.code} · ЛИСТ ЧЕРТЕЖЕЙ А3`}</div>
       <div class="t">${plan.meta.title}</div>
       <div class="a">${plan.meta.address_short}</div>
       <div class="a">Общая площадь ${fmt(plan.area_summary.total_table_stated)} м² · ${plan.rooms.length} помещений</div>
-      <div class="bigbar">${poche ? `<div class="bar">${[0, 1, 2, 3, 4].map((i) => `<i style="width:${(poche.S * cellW) / 1080}mm;background:${i % 2 ? "#fff" : "#111"}"></i>`).join("")}</div><span>Линейка 0–5 м к поше-плану (№ ${DRAWINGS.indexOf(poche) + 1}); у каждого чертежа своя линейка под рамкой</span>` : ""}</div>
+      <div class="bigbar">${poche && !CLIENT ? `<div class="bar">${[0, 1, 2, 3, 4].map((i) => `<i style="width:${(poche.S * cellW) / 1080}mm;background:${i % 2 ? "#fff" : "#111"}"></i>`).join("")}</div><span>Линейка 0–5 м к поше-плану (№ ${DRAWINGS.indexOf(poche) + 1}); у каждого чертежа своя линейка под рамкой</span>` : ""}</div>
     </div>
     <div><div class="h">Чертежи</div><ol>${DRAWINGS.map((d) => `<li>${d.name}</li>`).join("")}</ol></div>
-    <div><div class="h">Взято условно</div><div class="c"><b>Условно:</b> ${cond.join("; ")}.</div>
-      <div class="src">Все чертежи построены только из plan.json. Кадры — последние кадры роликов HyperFrames.</div></div>
+    ${CLIENT ? `<div><div class="h">Важно</div><div class="c">${plan.meta.client_disclaimer || "Часть параметров — ориентировочные."}</div></div>` : `<div><div class="h">Взято условно</div><div class="c"><b>Условно:</b> ${cond.join("; ")}.</div>
+      <div class="src">Все чертежи построены только из plan.json. Кадры — последние кадры роликов HyperFrames.</div></div>`}
   </div>
 </div></body></html>`;
-fs.writeFileSync(path.join(OUT, "sheet.html"), html);
+fs.writeFileSync(path.join(OUT, `sheet${SFX}.html`), html);
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: Math.round((A3W / 25.4) * 96), height: Math.round((A3H / 25.4) * 96) }, deviceScaleFactor: 3 });
-await page.goto("file://" + path.join(OUT, "sheet.html"));
+await page.goto("file://" + path.join(OUT, `sheet${SFX}.html`));
 await page.waitForLoadState("networkidle");
-await page.pdf({ path: path.join(OUT, "sheet.pdf"), format: "A3", printBackground: true, preferCSSPageSize: true });
-await page.screenshot({ path: path.join(OUT, "sheet.png"), fullPage: false });
+await page.pdf({ path: path.join(OUT, `sheet${SFX}.pdf`), format: "A3", printBackground: true, preferCSSPageSize: true });
+await page.screenshot({ path: path.join(OUT, `sheet${SFX}.png`), fullPage: false });
 await browser.close();
 console.log("drawings:", DRAWINGS.map((d) => `${d.dir}${d.S ? " S=" + d.S : ""}`).join(", "));

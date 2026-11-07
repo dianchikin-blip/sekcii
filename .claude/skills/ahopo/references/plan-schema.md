@@ -5,6 +5,8 @@
 | Поле | Формат | Кто использует |
 |---|---|---|
 | `meta.kicker`, `meta.title`, `meta.code`, `meta.address_short` | строки | шапки всех роликов, штампы |
+| `meta.client_kicker`, `meta.client_disclaimer` | строки | клиентская версия: шапка и единственная оговорка |
+| `assumptions[A-roof].value.ridge_x`, `ridge_z` | числа, м | двускатная крыша в аксонометрии (карниз = верх стен) |
 | `outline.polygon` | `[[x,y],…]` против часовой, наружные грани, без крыльца | axo, shadows, zoning, poche |
 | `walls[]` | `{id, kind: external\|internal_bearing\|partition, thickness, a:[x,y], b:[x,y]}` — осевая линия, стены только горизонтальные или вертикальные | все |
 | `openings[]` | `{id, type: window\|fixed_glazing\|door\|double_door\|opening, wall, a, b, width, hinge?, opens_into: room id\|"outside"\|null, leaves?, source}` — `a`/`b` на грани стены | все; `source` со словами «размер»/«масштаб» решает, ставить ли ≈ |

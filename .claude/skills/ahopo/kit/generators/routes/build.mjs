@@ -3,6 +3,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+// Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const W = 1080, HH = 1920;
 const S = 66, PX0 = 126, PY0 = 300 + 13.3 * S;
 const X = (x) => PX0 + x * S, Y = (y) => PY0 - y * S;
@@ -118,7 +121,7 @@ for (const r of plan.rooms) {
 for (const z of plan.zones.filter((z) => z.room === "R1")) {
   const [zx, zy] = z.point;
   plate.push(`<circle cx="${f(X(zx))}" cy="${f(Y(zy))}" r="5" fill="#6F685F"/>`);
-  plate.push(`<text x="${f(X(zx))}" y="${f(Y(zy) - 14)}" font-size="16" text-anchor="middle" fill="#6F685F">${z.name} <tspan fill="#9A4322" font-size="13">условно</tspan></text>`);
+  plate.push(`<text x="${f(X(zx))}" y="${f(Y(zy) - 14)}" font-size="16" text-anchor="middle" fill="#6F685F">${z.name}${CLIENT ? "" : ` <tspan fill="#9A4322" font-size="13">условно</tspan>`}</text>`);
 }
 
 // ---------- стили маршрутов ----------
@@ -169,7 +172,7 @@ const LY = PY0 + 56;
 const legendRows = routes.map((r, i) => `
   <div class="row" id="lg-${r.id}">
     <svg width="64" height="26"><line x1="2" y1="13" x2="62" y2="13" stroke="${r.st.col}" stroke-width="${r.st.w}"/></svg>
-    <div class="nm"><b>${r.name}</b><span>${r.stops} · двери ${r.doors.map((d) => doorNo[d.id]).filter((v, j, a) => a.indexOf(v) === j).join(", ")}</span></div>
+    <div class="nm"><b>${r.name}</b><span>${r.stops}${CLIENT ? "" : ` · двери ${r.doors.map((d) => doorNo[d.id]).filter((v, j, a) => a.indexOf(v) === j).join(", ")}`}</span></div>
     <div class="len" style="color:${r.st.ink}"><span id="len-${r.id}">0,00</span> м</div>
   </div>`).join("");
 const doorList = Object.entries(doorNo).map(([id, n]) => {
@@ -196,6 +199,7 @@ const html = `<template>
     #rt-doors .dn { display: inline-block; width: 26px; height: 26px; line-height: 26px; border-radius: 13px; background: #23201C; color: #fff; text-align: center; font-weight: 700; font-size: 15px; }
     #rt-note { margin-top: 10px; font-size: 17px; color: #5E574E; line-height: 1.45; }
     #rt-note b { color: #9A4322; }
+    ${CLIENT ? "#rt-note, #rt-doors, #rt-badges { display: none; }" : ""}
   </style>
   <div id="root" data-composition-id="routes" data-width="1080" data-height="1920">
     <svg id="rt-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
@@ -205,9 +209,9 @@ const html = `<template>
       <g id="rt-badges">${badges}</g>
     </svg>
     <div id="rt-head">
-      <div class="k">${plan.meta.kicker}</div>
+      <div class="k">${KICKER}</div>
       <div class="t">Маршруты по дому</div>
-      <div class="d">Линии идут через центры дверей · ○ старт, ● финиш</div>
+      <div class="d">${CLIENT ? "Как вы будете ходить по дому · ○ старт, ● финиш" : "Линии идут через центры дверей · ○ старт, ● финиш"}</div>
     </div>
     <div id="rt-legend">
       ${legendRows}

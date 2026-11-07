@@ -3,6 +3,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+// Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const A = Object.fromEntries(plan.assumptions.map((a) => [a.id, a]));
 const H = A["A-heights"].value;
 const WALL_TOP = H.wall_top;          // 2.952 — условно
@@ -159,22 +162,61 @@ const wallEls = sorted.map((b, i) => {
     + `<polygon fill="${sh.w}"${op}/><polygon fill="${sh.s}"${op}/><polygon fill="${sh.top}"${op}/></g>`;
 }).join("\n");
 
-// ---------- слой 3: крыша (плоская, условно) ----------
-const roof = [];
-const rz0 = 0, rz1 = ROOF_T;
-for (let i = 0; i < out.length; i++) {
-  const [x1, y1] = out[i], [x2, y2] = out[(i + 1) % out.length];
-  const nx = y2 - y1, ny = -(x2 - x1); // внешняя нормаль для CCW
-  if (nx < -eps || ny < -eps) {
-    roof.push(`<polygon points="${pts([P(x1, y1, rz0), P(x2, y2, rz0), P(x2, y2, rz1), P(x1, y1, rz1)])}" fill="${ny < -eps ? "#55605E" : "#3F4846"}"/>`);
+// ---------- слой 3: двускатная крыша (конёк вдоль Y на ridge_x; высоты — условно) ----------
+const RF = A["A-roof"].value;
+const XR = RF.ridge_x, RZ = RF.ridge_z - WALL_TOP;           // высота конька над карнизом
+const xs0 = out.map((p) => p[0]), XMIN = Math.min(...xs0), XMAX = Math.max(...xs0);
+const hR = (x) => (x <= XR ? RZ * (x - XMIN) / (XR - XMIN) : RZ * (XMAX - x) / (XMAX - XR));
+const R3 = (x, y) => P(x, y, hR(x));
+const rz1 = 0;
+// контур делим на западную (x ≤ XR) и восточную (x ≥ XR) части
+const clipX = (poly, keepLeft) => {           // отсечение многоугольника вертикалью x = XR
+  const res = [];
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i], b = poly[(i + 1) % poly.length];
+    const ina = keepLeft ? a[0] <= XR + 1e-9 : a[0] >= XR - 1e-9, inb = keepLeft ? b[0] <= XR + 1e-9 : b[0] >= XR - 1e-9;
+    if (ina) res.push(a);
+    if (ina !== inb) { const t = (XR - a[0]) / (b[0] - a[0]); res.push([XR, a[1] + t * (b[1] - a[1])]); }
   }
+  return res;
+};
+const westP = clipX(out, true), eastP = clipX(out, false);
+const roof = [];
+const face = (q, fill) => roof.push(`<polygon points="${pts(q)}" fill="${fill}"/>`);
+// 1) восточный скат (дальше от зрителя)
+face(eastP.map((p) => R3(p[0], p[1])), "#6E7B78");
+// 2) вертикальные фронтоны: видимы только грани с нормалью на юг (−y) или запад (−x); от дальних к ближним
+const gables = [];
+for (let i = 0; i < out.length; i++) {
+  const a = out[i], b = out[(i + 1) % out.length];
+  const nx = b[1] - a[1], ny = -(b[0] - a[0]);
+  if (!(nx < -eps || ny < -eps)) continue;
+  // ребро может пересекать конёк — режем
+  const segs = (a[0] - XR) * (b[0] - XR) < 0 ? [[a, [XR, a[1]]], [[XR, a[1]], b]] : [[a, b]];
+  for (const [p, q] of segs) gables.push({ p, q, d: p[0] + p[1] + q[0] + q[1] });
 }
-roof.push(`<polygon points="${pts(out.map((p) => P(p[0], p[1], rz1)))}" fill="#6E7B78"/>`);
-// лёгкая «фальцевая» штриховка на крыше
-const xsO = out.map((p) => p[0]);
-for (let x = 0.8; x < Math.max(...xsO); x += 0.8) {
-  // клип по контуру через clipPath
-  roof.push(`<line x1="${f(P(x, -1, rz1)[0])}" y1="${f(P(x, -1, rz1)[1])}" x2="${f(P(x, 15, rz1)[0])}" y2="${f(P(x, 15, rz1)[1])}" stroke="#7F8C89" stroke-width="1" clip-path="url(#roofclip)"/>`);
+// грань, где восточный скат выше западного контура (торец выступа у конька)
+gables.sort((u, v) => v.d - u.d);
+for (const g of gables) face([P(g.p[0], g.p[1], 0), P(g.q[0], g.q[1], 0), R3(g.q[0], g.q[1]), R3(g.p[0], g.p[1])], Math.abs(g.p[1] - g.q[1]) < eps ? "#E9E4DB" : "#D6D0C5");
+const yW = westP.map((p) => p[1]), yE = eastP.map((p) => p[1]);
+if (Math.max(...yE) > Math.max(...yW) + eps) {
+  const y0 = Math.max(...yW), y1 = Math.max(...yE);
+  face([P(XR, y0, 0), P(XR, y1, 0), P(XR, y1, RZ), P(XR, y0, RZ)], "#D6D0C5");
+}
+// 3) западный скат (ближе)
+face(westP.map((p) => R3(p[0], p[1])), "#59666A");
+// фальцы вдоль ската
+const yMinW = Math.min(...yW), yMaxW = Math.max(...yW);
+for (let y = yMinW + 0.4; y < yMaxW - 0.1; y += 0.8) roof.push(`<line x1="${f(R3(XMIN, y)[0])}" y1="${f(R3(XMIN, y)[1])}" x2="${f(R3(XR, y)[0])}" y2="${f(R3(XR, y)[1])}" stroke="#6C797D" stroke-width="1"/>`);
+const yMaxE = Math.max(...yE);
+for (let y = Math.min(...yE) + 0.4; y < yMaxE - 0.1; y += 0.8) {
+  // правый край восточного ската на этой широте
+  let xr = XR;
+  for (let i = 0; i < eastP.length; i++) {
+    const a = eastP[i], b = eastP[(i + 1) % eastP.length];
+    if ((a[1] - y) * (b[1] - y) <= 0 && Math.abs(a[1] - b[1]) > eps) xr = Math.max(xr, a[0] + (y - a[1]) / (b[1] - a[1]) * (b[0] - a[0]));
+  }
+  roof.push(`<line x1="${f(R3(XR, y)[0])}" y1="${f(R3(XR, y)[1])}" x2="${f(R3(xr, y)[0])}" y2="${f(R3(xr, y)[1])}" stroke="#80908C" stroke-width="1"/>`);
 }
 
 // ---------- пунктирные вертикали по углам ----------
@@ -186,7 +228,7 @@ const dashes = out.map((p) => {
 // ---------- подписи слоёв (слева, у западного угла каждого слоя) ----------
 const nw = out.reduce((m, p) => ((p[0] - p[1]) < (m[0] - m[1]) ? p : m), out[0]);
 const anchor = (z) => P(nw[0], nw[1], z);
-const L1 = anchor(0), L2 = anchor(Z_WALLS + WALL_TOP), L3 = anchor(Z_ROOF + ROOF_T);
+const L1 = anchor(0), L2 = anchor(Z_WALLS + WALL_TOP), L3 = anchor(Z_ROOF + 0.3);
 const totalTable = plan.area_summary.total_table_stated;
 
 const html = `<template>
@@ -204,10 +246,11 @@ const html = `<template>
     #axo-head .d { font-size: 24px; color: #6A6359; margin-top: 14px; }
     #axo-foot { position: absolute; left: 64px; right: 64px; bottom: 96px; font-size: 21px; line-height: 1.45; color: #6A6359; border-top: 1.5px solid #D8D1C5; padding-top: 18px; }
     #axo-foot b { color: #9A4322; }
+    ${CLIENT ? "#axo-foot { display: none; }" : ""}
   </style>
   <div id="root" data-composition-id="axo" data-width="1080" data-height="1920">
     <svg id="axo-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
-      <defs><clipPath id="roofclip"><polygon points="${pts(out.map((p) => P(p[0], p[1], rz1)))}"/></clipPath></defs>
+      
       <g id="axo-dashes">${dashes}</g>
       <g id="axo-floor-l"><g id="axo-floor">${floor.join("\n")}<g id="axo-flabels">${labels.join("\n")}</g></g></g>
       <g id="axo-walls-l" transform="translate(0,${f(-Z_WALLS * S)})"><g id="axo-walls">${wallEls}</g></g>
@@ -215,24 +258,24 @@ const html = `<template>
     </svg>
 
     <div id="axo-head">
-      <div class="k">${plan.meta.kicker}</div>
-      <div class="t">Разнесённая<br>аксонометрия</div>
-      <div class="d">Вид с юго-запада <span class="tag" style="margin:0 0 0 8px;font-size:15px">УСЛОВНО</span> · ${fmt(totalTable)} м² по проекту</div>
+      <div class="k">${KICKER}</div>
+      <div class="t">${CLIENT ? "Дом по слоям" : "Разнесённая<br>аксонометрия"}</div>
+      <div class="d">${CLIENT ? `Пол · стены · крыша · ${fmt(totalTable)} м²` : `Вид с юго-запада <span class="tag" style="margin:0 0 0 8px;font-size:15px">УСЛОВНО</span> · ${fmt(totalTable)} м² по проекту`}</div>
     </div>
 
     <div id="lab-roof" class="lab" style="top:${f(L3[1] - 120)}px">
       <div class="no">03</div><div class="nm">Крыша</div>
-      <div class="sub">Плоская плита ${fmt(ROOF_T)} м<br>(в проекте —<br>скатная)</div>
-      <div class="tag">УСЛОВНО</div>
+      <div class="sub">Двускатная${CLIENT ? "" : `,<br>конёк ≈ ${fmt(RF.ridge_z)} м`}</div>
+      ${CLIENT ? "" : `<div class="tag">УСЛОВНО</div>`}
     </div>
     <div id="lab-walls" class="lab" style="top:${f(L2[1] - 150)}px">
       <div class="no">02</div><div class="nm">Стены</div>
-      <div class="sub">Наружные 0,41 м,<br>проёмы из плана.<br>Окна 0,59–2,42 м<br>по разрезу</div>
-      <div class="tag">ВЫСОТА ${fmt(WALL_TOP)} М,<br>ДВЕРИ ${fmt(DOOR)} М — УСЛОВНО</div>
+      ${CLIENT ? `<div class="sub">Окна и двери<br>на своих местах</div>` : `<div class="sub">Наружные 0,41 м,<br>проёмы из плана.<br>Окна 0,59–2,42 м<br>по разрезу</div>
+      <div class="tag">ВЫСОТА ${fmt(WALL_TOP)} М,<br>ДВЕРИ ${fmt(DOOR)} М — УСЛОВНО</div>`}
     </div>
     <div id="lab-floor" class="lab" style="top:${f(L1[1] - 130)}px">
       <div class="no">01</div><div class="nm">Пол</div>
-      <div class="sub">${plan.rooms.length} помещений,<br>площади<br>по экспликации</div>
+      <div class="sub">${plan.rooms.length} помещений,<br>площади<br>${CLIENT ? "по проекту" : "по экспликации"}</div>
     </div>
 
     <div id="axo-foot">Построено только из plan.json. <b>Условно:</b> сторона света (север ≈ верх листа), высота стен и дверей, плоская крыша.</div>

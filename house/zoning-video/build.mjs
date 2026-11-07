@@ -3,6 +3,9 @@
 import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
+// Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
+const CLIENT = (process.env.AUDIENCE || plan.audience || "architect") === "client";
+const KICKER = CLIENT ? (plan.meta.client_kicker || plan.meta.title.toUpperCase()) : plan.meta.kicker;
 const W = 1080, HH = 1920;
 const S = 60, PX0 = (W - 12.56 * S) / 2, PY0 = 290 + 13.3 * S;
 const X = (x) => PX0 + x * S, Y = (y) => PY0 - y * S;
@@ -111,6 +114,7 @@ const html = `<template>
     #zn-pcts div { font-size: 22px; font-weight: 700; }
     #zn-note { position: absolute; left: 56px; right: 56px; top: ${TY + 500}px; font-size: 16px; line-height: 1.45; color: #5E574E; }
     #zn-note b { color: #9A4322; }
+    ${CLIENT ? "#zn-note { display: none; }" : ""}
   </style>
   <div id="root" data-composition-id="zoning" data-width="1080" data-height="1920">
     <svg id="zn-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
@@ -120,12 +124,12 @@ const html = `<template>
       <g id="zn-labels">${labels}</g>
     </svg>
     <div id="zn-head">
-      <div class="k">${plan.meta.kicker}</div>
+      <div class="k">${KICKER}</div>
       <div class="t">Зонирование</div>
-      <div class="d">День · ночь · службы и проходы — площади по экспликации</div>
+      <div class="d">День · ночь · службы и проходы — площади ${CLIENT ? "по проекту" : "по экспликации"}</div>
     </div>
     <div id="zn-table">${cols}</div>
-    <div id="zn-total"><div class="l">Общая площадь<span>сумма проверена: ${fmt(stated)} м² по экспликации</span></div><div class="v"><span id="zn-sum">0,00</span> м²</div></div>
+    <div id="zn-total"><div class="l">Общая площадь${CLIENT ? "" : `<span>сумма проверена: ${fmt(stated)} м² по экспликации</span>`}</div><div class="v"><span id="zn-sum">0,00</span> м²</div></div>
     <div id="zn-bar">${zones.map((z) => `<div class="seg" style="flex:0 0 ${z.pct}%"><div class="fill" id="bar-${z.id}" style="background:${C[z.id].bar}"></div></div>`).join("")}</div>
     <div id="zn-pcts">${zones.map((z) => `<div id="pc-${z.id}" style="flex:0 0 ${z.pct}%;color:${C[z.id].ink}">${fmt(z.pct, 1)} %</div>`).join("")}</div>
     <div id="zn-note"><b>Условно:</b> гардеробная — в ночной зоне, крыльцо — в проходах. Доли округлены до 0,1 % так, что в сумме ровно 100 %.</div>
