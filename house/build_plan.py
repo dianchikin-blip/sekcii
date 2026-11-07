@@ -187,6 +187,21 @@ plan["sections"] = [dict(
   view="east",
   note="Ступенчатый разрез: южное окно спальни 4 (O2) → дверь D5 → коридор → проход A1 → кухня-гостиная → северное окно O5. Выбран так, чтобы показать сквозное проветривание; смотрим на восток.")]
 
+plan["zones"] = [
+  dict(id="Z-kitchen", name="кухня", room="R1", point=[10.6, 8.6], note="рабочая зона у плиты и мойки по мебели на листе 14 — точка условно"),
+  dict(id="Z-living", name="гостиная", room="R1", point=[6.6, 10.6], note="зона дивана — точка условно"),
+  dict(id="Z-entry", name="вход", room="R8", point=[8.84, 0.5], note="крыльцо перед входной дверью"),
+]
+plan["routes"] = [
+  dict(id="morning", name="Утро", stops="спальня → ванная → кухня",
+       waypoints=[{"room": "R4"}, {"door": "D5"}, {"door": "D4"}, {"pt": [10.85, 5.5]}, {"pt": [11.45, 6.13]}, {"pt": [10.85, 6.76]},
+                  {"door": "D4"}, {"door": "A1"}, {"zone": "Z-kitchen"}]),
+  dict(id="guest", name="Гость", stops="вход → кухня → гостиная",
+       waypoints=[{"zone": "Z-entry"}, {"door": "D1"}, {"door": "D2"}, {"door": "A1"}, {"zone": "Z-kitchen"}, {"zone": "Z-living"}]),
+  dict(id="groceries", name="Продукты", stops="вход → кухня",
+       waypoints=[{"zone": "Z-entry"}, {"door": "D1"}, {"door": "D2"}, {"door": "A1"}, {"zone": "Z-kitchen"}]),
+]
+
 plan["assumptions"] = [
   dict(id="A-north", topic="Север", value="≈ верх листа плана", status="условно (лист 13 PDF, роза ветров; поворот дома 10–20° не учтён)", question="Подтверди: гостиная с выходом на улицу смотрит на север, спальни 3 и 4 — на юг?"),
   dict(id="A-ext-wall", topic="Наружные стены", value="0,41 м везде", status="допущение",
