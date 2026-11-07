@@ -193,14 +193,26 @@ plan["zones"] = [
   dict(id="Z-entry", name="вход", room="R8", point=[8.84, 0.5], note="крыльцо перед входной дверью"),
 ]
 plan["routes"] = [
-  dict(id="morning", name="Утро", stops="спальня → ванная → кухня",
+  dict(id="morning", name="Утро · спальня 4", stops="спальня 4 → ванная → кухня",
        waypoints=[{"room": "R4"}, {"door": "D5"}, {"door": "D4"}, {"pt": [10.85, 5.5]}, {"pt": [11.45, 6.13]}, {"pt": [10.85, 6.76]},
+                  {"door": "D4"}, {"door": "A1"}, {"zone": "Z-kitchen"}]),
+  dict(id="morning2", name="Утро · спальня 2", stops="спальня 2 → ванная → кухня",
+       waypoints=[{"room": "R2"}, {"door": "D7"}, {"pt": [3.9, 6.0]}, {"door": "D4"}, {"pt": [10.85, 5.5]}, {"pt": [11.45, 6.13]}, {"pt": [10.85, 6.76]},
+                  {"door": "D4"}, {"door": "A1"}, {"zone": "Z-kitchen"}]),
+  dict(id="morning3", name="Утро · спальня 3", stops="спальня 3 → ванная → кухня",
+       waypoints=[{"room": "R3"}, {"door": "D6"}, {"door": "D4"}, {"pt": [10.85, 5.5]}, {"pt": [11.45, 6.13]}, {"pt": [10.85, 6.76]},
                   {"door": "D4"}, {"door": "A1"}, {"zone": "Z-kitchen"}]),
   dict(id="guest", name="Гость", stops="вход → кухня → гостиная",
        waypoints=[{"zone": "Z-entry"}, {"door": "D1"}, {"door": "D2"}, {"door": "A1"}, {"zone": "Z-kitchen"}, {"zone": "Z-living"}]),
   dict(id="groceries", name="Продукты", stops="вход → кухня",
        waypoints=[{"zone": "Z-entry"}, {"door": "D1"}, {"door": "D2"}, {"door": "A1"}, {"zone": "Z-kitchen"}]),
 ]
+
+plan["zoning"] = dict(
+  zones=[dict(id="day", name="День", rooms=["R1"]),
+         dict(id="night", name="Ночь", rooms=["R2", "R3", "R4", "R10"]),
+         dict(id="service", name="Службы и проходы", rooms=["R7", "R9", "R5", "R11", "R6", "R8"])],
+  note="Гардеробная отнесена к ночной зоне (при спальнях), крыльцо — к проходам, чтобы сумма совпала с общей площадью 132,00 по экспликации. Отнесение — условно.")
 
 plan["assumptions"] = [
   dict(id="A-north", topic="Север", value="≈ верх листа плана", status="условно (лист 13 PDF, роза ветров; поворот дома 10–20° не учтён)", question="Подтверди: гостиная с выходом на улицу смотрит на север, спальни 3 и 4 — на юг?"),

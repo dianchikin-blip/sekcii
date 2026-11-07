@@ -4,7 +4,7 @@ import fs from "node:fs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
 const W = 1080, HH = 1920;
-const S = 72, PX0 = 88, PY0 = 318 + 13.3 * S;
+const S = 66, PX0 = 126, PY0 = 300 + 13.3 * S;
 const X = (x) => PX0 + x * S, Y = (y) => PY0 - y * S;
 const f = (n) => n.toFixed(1);
 const fmt = (n, d = 2) => n.toFixed(d).replace(".", ",");
@@ -109,7 +109,7 @@ for (const o of plan.openings) {
   plate.push(`<rect x="${f(X(x0))}" y="${f(Y(y1))}" width="${f((x1 - x0) * S)}" height="${f((y1 - y0) * S)}" fill="${isWin ? "#E2EDF3" : "#FBFAF7"}"/>`);
 }
 for (const c of plan.columns) plate.push(`<polygon points="${pts(c.polygon)}" fill="#C9C4BB"/>`);
-const labelAt = { R3: [2.0, 2.2], R7: [5.6, 6.0], R1: [8.4, 12.1], R8: [10.9, 0.65], R4: [6.0, 1.2], R5: [10.85, 4.75], R9: [9.45, 2.7] };
+const labelAt = { R3: [1.75, 1.1], R7: [6.3, 6.4], R1: [8.4, 12.1], R8: [10.9, 0.65], R4: [6.0, 1.2], R5: [10.85, 4.75], R9: [9.45, 2.7], R2: [2.375, 11.1] };
 for (const r of plan.rooms) {
   const [cx, cy] = labelAt[r.id] || centroid(r.polygon);
   const small = r.area_table < 6;
@@ -123,11 +123,13 @@ for (const z of plan.zones.filter((z) => z.room === "R1")) {
 
 // ---------- стили маршрутов ----------
 const style = {
-  morning: { col: "#E3962B", ink: "#8A5208", w: 17 },
-  guest: { col: "#17877D", ink: "#0F5F58", w: 11 },
-  groceries: { col: "#6B4FD6", ink: "#4E35B0", w: 6 },
+  morning: { col: "#E3962B", ink: "#8A5208", w: 21 },
+  morning2: { col: "#D9534F", ink: "#A12E2A", w: 16 },
+  morning3: { col: "#C7A20F", ink: "#6E5A00", w: 11 },
+  guest: { col: "#17877D", ink: "#0F5F58", w: 8 },
+  groceries: { col: "#6B4FD6", ink: "#4E35B0", w: 4 },
 };
-const T0 = 0.35, DUR = 0.72, GAP = 0.08;
+const T0 = 0.3, DUR = 0.42, GAP = 0.04;
 routes.forEach((r, i) => { r.t0 = T0 + i * (DUR + GAP); r.st = style[r.id]; });
 
 const lines = routes.map((r) => `<path id="rt-${r.id}" d="${r.d}" fill="none" stroke="${r.st.col}" stroke-width="${r.st.w}" stroke-linecap="butt" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`).join("\n");
@@ -143,7 +145,7 @@ for (const r of routes) for (const dd of r.doors) {
   const t = r.t0 + (r.marks[dd.at] / r.L) * DUR;
   if (!(dd.id in firstReach)) firstReach[dd.id] = t;
 }
-const badgeOffset = { D5: [-0.75, 0], D4: [0, -0.62], A1: [-0.95, 0], D1: [-0.95, 0], D2: [-0.9, 0] };
+const badgeOffset = { D5: [-0.75, 0], D4: [0, -0.62], A1: [-0.95, 0], D1: [-0.95, 0], D2: [-0.9, 0], D7: [-1.05, 0.3], D6: [-1.05, -0.3] };
 const badges = Object.entries(doorNo).map(([id, n]) => {
   const o = openById[id], g = doorGeom(o);
   const [ox, oy] = badgeOffset[id] || [0, -0.6];
@@ -159,7 +161,7 @@ const badges = Object.entries(doorNo).map(([id, n]) => {
 }).join("\n");
 
 // ---------- легенда ----------
-const LY = PY0 + 120;
+const LY = PY0 + 56;
 const legendRows = routes.map((r, i) => `
   <div class="row" id="lg-${r.id}">
     <svg width="64" height="26"><line x1="2" y1="13" x2="62" y2="13" stroke="${r.st.col}" stroke-width="${r.st.w}"/></svg>
@@ -181,12 +183,12 @@ const html = `<template>
     #rt-head .t { font-size: 58px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin-top: 12px; }
     #rt-head .d { font-size: 23px; color: #5E574E; margin-top: 12px; }
     #rt-legend { position: absolute; left: 64px; right: 64px; top: ${LY}px; }
-    #rt-legend .row { display: flex; align-items: center; gap: 22px; padding: 16px 0; border-bottom: 1.5px solid #DDD6CA; }
+    #rt-legend .row { display: flex; align-items: center; gap: 20px; padding: 9px 0; border-bottom: 1.5px solid #DDD6CA; }
     #rt-legend .nm { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-    #rt-legend .nm b { font-size: 28px; }
-    #rt-legend .nm span { font-size: 19px; color: #5E574E; }
-    #rt-legend .len { font-size: 46px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; min-width: 230px; text-align: right; }
-    #rt-doors { margin-top: 18px; font-size: 19px; color: #3A3530; line-height: 1.6; }
+    #rt-legend .nm b { font-size: 24px; }
+    #rt-legend .nm span { font-size: 17px; color: #5E574E; }
+    #rt-legend .len { font-size: 38px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; min-width: 230px; text-align: right; }
+    #rt-doors { margin-top: 12px; font-size: 16.5px; color: #3A3530; line-height: 1.6; }
     #rt-doors .dn { display: inline-block; width: 26px; height: 26px; line-height: 26px; border-radius: 13px; background: #23201C; color: #fff; text-align: center; font-weight: 700; font-size: 15px; }
     #rt-note { margin-top: 10px; font-size: 17px; color: #5E574E; line-height: 1.45; }
     #rt-note b { color: #9A4322; }
@@ -229,8 +231,8 @@ const html = `<template>
       }
       const B = ${JSON.stringify(Object.fromEntries(Object.entries(firstReach).map(([k, v]) => [k, +v.toFixed(3)])))};
       for (const id in B) tl.fromTo("#door-" + id, { opacity: 0, scale: 0.5, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.16, ease: "back.out(2)" }, B[id]);
-      tl.fromTo("#rt-doors", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.45);
-      tl.fromTo("#rt-note", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.55);
+      tl.fromTo("#rt-doors", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.5);
+      tl.fromTo("#rt-note", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.6);
       window.__timelines = window.__timelines || {};
       window.__timelines["routes"] = tl;
     })();

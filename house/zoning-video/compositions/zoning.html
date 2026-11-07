@@ -1,0 +1,188 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #F3F0EA; font-family: "Inter", sans-serif; color: #1E1B18; }
+    #zn-svg { position: absolute; inset: 0; }
+    #zn-head { position: absolute; left: 64px; right: 64px; top: 84px; }
+    #zn-head .k { font-size: 22px; font-weight: 700; letter-spacing: .14em; color: #8A6230; }
+    #zn-head .t { font-size: 58px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin-top: 12px; }
+    #zn-head .d { font-size: 23px; color: #5E574E; margin-top: 12px; }
+    #zn-table { position: absolute; left: 56px; right: 56px; top: 1132px; display: flex; gap: 22px; }
+    .col { flex: 1; display: flex; flex-direction: column; }
+    .ch { font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #1E1B18; margin-bottom: 4px; white-space: nowrap; }
+    .ch i { width: 16px; height: 16px; border-radius: 4px; display: inline-block; }
+    .tr { display: flex; justify-content: space-between; font-size: 16px; line-height: 1.75; color: #3A3530; border-bottom: 1px solid #DDD6CA; }
+    .tr span:last-child { font-variant-numeric: tabular-nums; }
+    .tt { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; font-size: 17px; font-weight: 700; }
+    .tt b { font-variant-numeric: tabular-nums; }
+    #zn-total { position: absolute; left: 56px; right: 56px; top: 1432px; display: flex; align-items: baseline; justify-content: space-between; border-top: 2px solid #1E1B18; padding-top: 14px; }
+    #zn-total .l { font-size: 24px; font-weight: 700; }
+    #zn-total .l span { display: block; font-size: 16px; font-weight: 400; color: #5E574E; margin-top: 4px; }
+    #zn-total .v { font-size: 64px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    #zn-bar { position: absolute; left: 56px; right: 56px; top: 1542px; display: flex; height: 34px; border-radius: 8px; overflow: hidden; background: #E4DED3; }
+    .seg { position: relative; height: 100%; }
+    .seg .fill { position: absolute; inset: 0; transform-origin: 0% 50%; transform: scaleX(0); }
+    #zn-pcts { position: absolute; left: 56px; right: 56px; top: 1584px; display: flex; }
+    #zn-pcts div { font-size: 22px; font-weight: 700; }
+    #zn-note { position: absolute; left: 56px; right: 56px; top: 1632px; font-size: 16px; line-height: 1.45; color: #5E574E; }
+    #zn-note b { color: #9A4322; }
+  </style>
+  <div id="root" data-composition-id="zoning" data-width="1080" data-height="1920">
+    <svg id="zn-svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+      <g id="zn-base"><polygon points="163.2,1088.0 651.6,1088.0 651.6,1010.0 916.8,1010.0 916.8,290.0 421.2,290.0 421.2,347.5 163.2,347.5" fill="#FFFFFF"/><polygon points="651.6,1088.0 894.0,1088.0 894.0,1065.2 916.8,1065.2 916.8,1010.0 651.6,1010.0" fill="#FFFFFF"/></g>
+      <g id="zn-fills"><polygon id="zf-R1" points="445.8,635.6 892.2,635.6 892.2,314.6 445.8,314.6" fill="#F5B577"/>
+<polygon id="zf-R2" points="187.8,612.8 423.6,612.8 423.6,372.1 187.8,372.1" fill="#A9D2EE"/>
+<polygon id="zf-R3" points="187.8,1063.4 423.6,1063.4 423.6,802.1 350.4,802.1 350.4,841.6 187.8,841.6" fill="#A9D2EE"/>
+<polygon id="zf-R4" points="438.6,1063.4 627.0,1063.4 627.0,790.9 438.6,790.9" fill="#A9D2EE"/>
+<polygon id="zf-R10" points="187.8,734.0 343.2,734.0 343.2,620.0 187.8,620.0" fill="#A9D2EE"/>
+<polygon id="zf-R7" points="350.4,794.9 423.6,794.9 423.6,768.1 651.6,768.1 651.6,823.2 726.0,823.2 726.0,650.6 612.0,650.6 612.0,687.7 423.6,687.7 423.6,620.0 350.4,620.0" fill="#AFD9A6"/>
+<polygon id="zf-R9" points="651.6,985.4 764.4,985.4 764.4,830.4 651.6,830.4" fill="#AFD9A6"/>
+<polygon id="zf-R5" points="733.2,823.2 892.2,823.2 892.2,650.6 733.2,650.6" fill="#AFD9A6"/>
+<polygon id="zf-R11" points="187.8,832.0 343.2,832.0 343.2,741.2 187.8,741.2" fill="#AFD9A6"/>
+<polygon id="zf-R6" points="771.6,985.4 892.2,985.4 892.2,830.4 771.6,830.4" fill="#AFD9A6"/>
+<polygon id="zf-R8" points="651.6,1088.0 894.0,1088.0 894.0,1065.2 916.8,1065.2 916.8,1010.0 651.6,1010.0" fill="#AFD9A6"/></g>
+      <g id="zn-walls"><rect x="163.2" y="1063.4" width="488.4" height="24.6" fill="#3A3530"/>
+<rect x="163.2" y="347.5" width="24.6" height="740.5" fill="#3A3530"/>
+<rect x="163.2" y="347.5" width="258.0" height="24.6" fill="#3A3530"/>
+<rect x="421.2" y="290.0" width="24.6" height="57.5" fill="#3A3530"/>
+<rect x="421.2" y="290.0" width="495.6" height="24.6" fill="#3A3530"/>
+<rect x="892.2" y="290.0" width="24.6" height="720.0" fill="#3A3530"/>
+<rect x="651.6" y="985.4" width="265.2" height="24.6" fill="#3A3530"/>
+<rect x="627.0" y="985.4" width="24.6" height="102.6" fill="#3A3530"/>
+<rect x="627.0" y="768.1" width="24.6" height="217.3" fill="#3A3530"/>
+<rect x="423.6" y="347.5" width="22.2" height="340.1" fill="#3A3530"/>
+<rect x="423.6" y="768.1" width="15.0" height="295.3" fill="#3A3530"/>
+<rect x="438.6" y="768.1" width="188.4" height="22.8" fill="#3A3530"/>
+<rect x="445.8" y="635.6" width="166.2" height="15.0" fill="#3A3530"/>
+<rect x="706.8" y="635.6" width="185.4" height="15.0" fill="#3A3530"/>
+<rect x="187.8" y="612.8" width="235.8" height="7.2" fill="#7C766D"/>
+<rect x="343.2" y="620.0" width="7.2" height="221.6" fill="#7C766D"/>
+<rect x="187.8" y="734.0" width="155.4" height="7.2" fill="#7C766D"/>
+<rect x="187.8" y="832.0" width="162.6" height="9.6" fill="#7C766D"/>
+<rect x="350.4" y="794.9" width="73.2" height="7.2" fill="#7C766D"/>
+<rect x="604.8" y="650.6" width="7.2" height="37.1" fill="#7C766D"/>
+<rect x="726.0" y="650.6" width="7.2" height="179.8" fill="#7C766D"/>
+<rect x="651.6" y="823.2" width="240.6" height="7.2" fill="#7C766D"/>
+<rect x="764.4" y="830.4" width="7.2" height="155.0" fill="#7C766D"/>
+<rect x="250.8" y="1062.8" width="120.0" height="25.8" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="464.4" y="1062.8" width="120.0" height="25.8" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="162.6" y="749.6" width="25.8" height="54.0" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="229.2" y="346.9" width="144.0" height="25.8" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="751.8" y="289.4" width="140.4" height="25.8" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="891.6" y="509.6" width="25.8" height="78.0" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="891.6" y="649.4" width="25.8" height="54.0" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="786.0" y="984.8" width="60.0" height="25.8" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="537.0" y="289.4" width="90.0" height="25.8" fill="#DCEAF2" fill-opacity="1"/>
+<rect x="662.4" y="984.8" width="62.4" height="25.8" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="661.2" y="822.6" width="54.0" height="8.4" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="763.8" y="830.4" width="8.4" height="48.2" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="725.4" y="696.8" width="8.4" height="46.8" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="573.0" y="767.5" width="54.0" height="24.0" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="363.0" y="794.3" width="48.0" height="8.4" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="363.0" y="612.2" width="48.0" height="8.4" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="342.6" y="752.0" width="8.4" height="45.0" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="342.6" y="650.6" width="8.4" height="83.4" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="445.8" y="289.4" width="91.2" height="25.8" fill="#F3F0EA" fill-opacity="0"/>
+<rect x="612.0" y="635.0" width="94.8" height="16.2" fill="#F3F0EA" fill-opacity="0"/>
+<polygon points="894.0,1088.0 916.8,1088.0 916.8,1065.2 894.0,1065.2" fill="#3A3530"/><rect x="662.4" y="984.8" width="62.4" height="25.8" fill="#FFFFFF"/>
+<rect x="661.2" y="822.6" width="54.0" height="8.4" fill="#FFFFFF"/>
+<rect x="763.8" y="830.4" width="8.4" height="48.2" fill="#FFFFFF"/>
+<rect x="725.4" y="696.8" width="8.4" height="46.8" fill="#FFFFFF"/>
+<rect x="573.0" y="767.5" width="54.0" height="24.0" fill="#FFFFFF"/>
+<rect x="363.0" y="794.3" width="48.0" height="8.4" fill="#FFFFFF"/>
+<rect x="363.0" y="612.2" width="48.0" height="8.4" fill="#FFFFFF"/>
+<rect x="342.6" y="752.0" width="8.4" height="45.0" fill="#FFFFFF"/>
+<rect x="342.6" y="650.6" width="8.4" height="83.4" fill="#FFFFFF"/>
+<rect x="445.8" y="289.4" width="91.2" height="25.8" fill="#FFFFFF"/>
+<rect x="612.0" y="635.0" width="94.8" height="16.2" fill="#FFFFFF"/></g>
+      <g id="zn-labels"><g id="zl-R1"><text x="669.0" y="473.1" font-size="18" font-weight="700" text-anchor="middle" fill="#1E1B18">Кухня-гостиная</text>
+<text x="669.0" y="494.1" font-size="16" text-anchor="middle" fill="#3A3530">39,87 м²</text></g>
+<g id="zl-R2"><text x="305.7" y="490.5" font-size="18" font-weight="700" text-anchor="middle" fill="#1E1B18">Спальня</text>
+<text x="305.7" y="511.5" font-size="16" text-anchor="middle" fill="#3A3530">16,00 м²</text></g>
+<g id="zl-R3"><text x="283.2" y="972.0" font-size="18" font-weight="700" text-anchor="middle" fill="#1E1B18">Спальня</text>
+<text x="283.2" y="993.0" font-size="16" text-anchor="middle" fill="#3A3530">15,27 м²</text></g>
+<g id="zl-R4"><text x="532.8" y="925.2" font-size="18" font-weight="700" text-anchor="middle" fill="#1E1B18">Спальня</text>
+<text x="532.8" y="946.2" font-size="16" text-anchor="middle" fill="#3A3530">14,05 м²</text></g>
+<g id="zl-R10"><text x="265.5" y="675.0" font-size="14" font-weight="700" text-anchor="middle" fill="#1E1B18">Гардеробная</text>
+<text x="265.5" y="692.0" font-size="13" text-anchor="middle" fill="#3A3530">5,40 м²</text></g>
+<g id="zl-R7"><text x="541.2" y="726.0" font-size="18" font-weight="700" text-anchor="middle" fill="#1E1B18">Коридор</text>
+<text x="541.2" y="747.0" font-size="16" text-anchor="middle" fill="#3A3530">15,00 м²</text></g>
+<g id="zl-R9"><text x="708.0" y="905.9" font-size="14" font-weight="700" text-anchor="middle" fill="#1E1B18">Тамбур</text>
+<text x="708.0" y="922.9" font-size="13" text-anchor="middle" fill="#3A3530">5,03 м²</text></g>
+<g id="zl-R5"><text x="812.7" y="734.9" font-size="18" font-weight="700" text-anchor="middle" fill="#1E1B18">Ванная</text>
+<text x="812.7" y="755.9" font-size="16" text-anchor="middle" fill="#3A3530">7,47 м²</text></g>
+<g id="zl-R11"><text x="265.5" y="784.6" font-size="14" font-weight="700" text-anchor="middle" fill="#1E1B18">Душевая</text>
+<text x="265.5" y="801.6" font-size="13" text-anchor="middle" fill="#3A3530">3,66 м²</text></g>
+<g id="zl-R6"><text x="831.9" y="905.9" font-size="14" font-weight="700" text-anchor="middle" fill="#1E1B18">Котельная</text>
+<text x="831.9" y="922.9" font-size="13" text-anchor="middle" fill="#3A3530">5,25 м²</text></g>
+<g id="zl-R8"><text x="799.2" y="1048.8" font-size="14" font-weight="700" text-anchor="middle" fill="#1E1B18">Крыльцо</text>
+<text x="799.2" y="1065.8" font-size="13" text-anchor="middle" fill="#3A3530">5,00 м²</text></g></g>
+    </svg>
+    <div id="zn-head">
+      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="t">Зонирование</div>
+      <div class="d">День · ночь · службы и проходы — площади по экспликации</div>
+    </div>
+    <div id="zn-table">
+  <div class="col">
+    <div class="ch"><i style="background:#F5B577"></i>День</div>
+    <div class="tr" id="tr-R1"><span>Кухня-гостиная</span><span>39,87</span></div>
+    <div class="tt" style="color:#8A4A0E"><span>Итого</span><span><b id="zt-day">0,00</b> м²</span></div>
+  </div>
+  <div class="col">
+    <div class="ch"><i style="background:#A9D2EE"></i>Ночь</div>
+    <div class="tr" id="tr-R2"><span>Спальня</span><span>16,00</span></div><div class="tr" id="tr-R3"><span>Спальня</span><span>15,27</span></div><div class="tr" id="tr-R4"><span>Спальня</span><span>14,05</span></div><div class="tr" id="tr-R10"><span>Гардеробная</span><span>5,40</span></div>
+    <div class="tt" style="color:#1F5A86"><span>Итого</span><span><b id="zt-night">0,00</b> м²</span></div>
+  </div>
+  <div class="col">
+    <div class="ch"><i style="background:#AFD9A6"></i>Службы и проходы</div>
+    <div class="tr" id="tr-R7"><span>Коридор</span><span>15,00</span></div><div class="tr" id="tr-R9"><span>Тамбур</span><span>5,03</span></div><div class="tr" id="tr-R5"><span>Ванная</span><span>7,47</span></div><div class="tr" id="tr-R11"><span>Душевая</span><span>3,66</span></div><div class="tr" id="tr-R6"><span>Котельная</span><span>5,25</span></div><div class="tr" id="tr-R8"><span>Крыльцо</span><span>5,00</span></div>
+    <div class="tt" style="color:#2C6A28"><span>Итого</span><span><b id="zt-service">0,00</b> м²</span></div>
+  </div></div>
+    <div id="zn-total"><div class="l">Общая площадь<span>сумма проверена: 132,00 м² по экспликации</span></div><div class="v"><span id="zn-sum">0,00</span> м²</div></div>
+    <div id="zn-bar"><div class="seg" style="flex:0 0 30.2%"><div class="fill" id="bar-day" style="background:#EE9A4E"></div></div><div class="seg" style="flex:0 0 38.4%"><div class="fill" id="bar-night" style="background:#6FB0DE"></div></div><div class="seg" style="flex:0 0 31.4%"><div class="fill" id="bar-service" style="background:#7EC173"></div></div></div>
+    <div id="zn-pcts"><div id="pc-day" style="flex:0 0 30.2%;color:#8A4A0E">30,2 %</div><div id="pc-night" style="flex:0 0 38.4%;color:#1F5A86">38,4 %</div><div id="pc-service" style="flex:0 0 31.4%;color:#2C6A28">31,4 %</div></div>
+    <div id="zn-note"><b>Условно:</b> гардеробная — в ночной зоне, крыльцо — в проходах. Доли округлены до 0,1 % так, что в сумме ровно 100 %.</div>
+  </div>
+  <script>
+    (function () {
+      const ORDER = [{"id":"R1","z":"day","t":0.45,"a":39.87},{"id":"R2","z":"night","t":0.615,"a":16},{"id":"R3","z":"night","t":0.78,"a":15.27},{"id":"R4","z":"night","t":0.945,"a":14.05},{"id":"R10","z":"night","t":1.11,"a":5.4},{"id":"R7","z":"service","t":1.275,"a":15},{"id":"R9","z":"service","t":1.44,"a":5.03},{"id":"R5","z":"service","t":1.605,"a":7.47},{"id":"R11","z":"service","t":1.77,"a":3.66},{"id":"R6","z":"service","t":1.935,"a":5.25},{"id":"R8","z":"service","t":2.1,"a":5}];
+      const ZA = {"day":39.87,"night":50.72,"service":41.41};
+      const FD = 0.24;
+      const fmt = (n) => n.toFixed(2).replace(".", ",");
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#zn-head", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0);
+      tl.fromTo(["#zn-base", "#zn-walls"], { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0.05);
+      tl.fromTo(["#zn-table", "#zn-total", "#zn-bar"], { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.2);
+      const sumEl = document.getElementById("zn-sum");
+      const ztEl = {}, barEl = {};
+      for (const k in ZA) { ztEl[k] = document.getElementById("zt-" + k); barEl[k] = document.getElementById("bar-" + k); }
+      const ease = gsap.parseEase("power1.inOut");
+      // все числа и полоса — функция времени таймлайна (корректно при любой перемотке)
+      function paint() {
+        const t = tl.time();
+        let sum = 0; const zs = {};
+        for (const k in ZA) zs[k] = 0;
+        for (const o of ORDER) {
+          const p = ease(Math.min(1, Math.max(0, (t - o.t) / FD)));
+          sum += o.a * p; zs[o.z] += o.a * p;
+        }
+        sumEl.textContent = fmt(Math.round(sum * 100) / 100);
+        for (const k in ZA) {
+          ztEl[k].textContent = fmt(Math.round(zs[k] * 100) / 100);
+          barEl[k].style.transform = "scaleX(" + (zs[k] / ZA[k]).toFixed(4) + ")";
+        }
+      }
+      for (const o of ORDER) {
+        tl.fromTo("#zf-" + o.id, { opacity: 0 }, { opacity: 1, duration: FD, ease: "power2.out" }, o.t);
+        tl.fromTo("#zl-" + o.id, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: FD, ease: "power2.out" }, o.t + 0.05);
+        tl.fromTo("#tr-" + o.id, { opacity: 0.25 }, { opacity: 1, duration: FD }, o.t);
+      }
+      const clock = { v: 0 };
+      tl.fromTo(clock, { v: 0 }, { v: 1, duration: 3, ease: "none", onUpdate: paint }, 0);
+      tl.fromTo("#zn-pcts", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.35);
+      tl.fromTo("#zn-note", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.45);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["zoning"] = tl;
+    })();
+  </script>
+</template>
