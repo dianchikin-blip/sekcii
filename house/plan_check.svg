@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="946" height="990" viewBox="0 0 946 990" font-family="Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#fff"/>
+<polygon points="378.6,441.6 825.0,441.6 825.0,120.6 378.6,120.6" fill="#f3f1ec" stroke="none"/>
+<polygon points="120.6,418.8 356.4,418.8 356.4,178.1 120.6,178.1" fill="#f3f1ec" stroke="none"/>
+<polygon points="120.6,869.4 356.4,869.4 356.4,608.1 283.2,608.1 283.2,647.6 120.6,647.6" fill="#f3f1ec" stroke="none"/>
+<polygon points="371.4,869.4 559.8,869.4 559.8,596.9 371.4,596.9" fill="#f3f1ec" stroke="none"/>
+<polygon points="666.0,629.2 825.0,629.2 825.0,456.6 666.0,456.6" fill="#f3f1ec" stroke="none"/>
+<polygon points="704.4,791.4 825.0,791.4 825.0,636.4 704.4,636.4" fill="#f3f1ec" stroke="none"/>
+<polygon points="283.2,600.9 356.4,600.9 356.4,574.1 584.4,574.1 584.4,629.2 658.8,629.2 658.8,456.6 544.8,456.6 544.8,493.7 356.4,493.7 356.4,426.0 283.2,426.0" fill="#f3f1ec" stroke="none"/>
+<polygon points="584.4,894.0 826.8,894.0 826.8,871.2 849.6,871.2 849.6,816.0 584.4,816.0" fill="#eceff3" stroke="none"/>
+<polygon points="584.4,791.4 697.2,791.4 697.2,636.4 584.4,636.4" fill="#f3f1ec" stroke="none"/>
+<polygon points="120.6,540.0 276.0,540.0 276.0,426.0 120.6,426.0" fill="#f3f1ec" stroke="none"/>
+<polygon points="120.6,638.0 276.0,638.0 276.0,547.2 120.6,547.2" fill="#f3f1ec" stroke="none"/>
+<polygon points="378.6,493.7 537.6,493.7 537.6,456.6 378.6,456.6" fill="none" stroke="#b9b4aa" stroke-width="1" stroke-dasharray="4 3"/>
+<polygon points="120.6,689.6 276.0,689.6 276.0,647.6 120.6,647.6" fill="none" stroke="#b9b4aa" stroke-width="1" stroke-dasharray="4 3"/>
+<polygon points="96.0,869.4 584.4,869.4 584.4,894.0 96.0,894.0" fill="#2b2b2b"/>
+<polygon points="96.0,894.0 96.0,153.5 120.6,153.5 120.6,894.0" fill="#2b2b2b"/>
+<polygon points="96.0,153.5 354.0,153.5 354.0,178.1 96.0,178.1" fill="#2b2b2b"/>
+<polygon points="354.0,153.5 354.0,96.0 378.6,96.0 378.6,153.5" fill="#2b2b2b"/>
+<polygon points="354.0,96.0 849.6,96.0 849.6,120.6 354.0,120.6" fill="#2b2b2b"/>
+<polygon points="825.0,816.0 825.0,96.0 849.6,96.0 849.6,816.0" fill="#2b2b2b"/>
+<polygon points="584.4,791.4 849.6,791.4 849.6,816.0 584.4,816.0" fill="#2b2b2b"/>
+<polygon points="559.8,894.0 559.8,791.4 584.4,791.4 584.4,894.0" fill="#2b2b2b"/>
+<polygon points="559.8,791.4 559.8,574.1 584.4,574.1 584.4,791.4" fill="#6b6258"/>
+<polygon points="356.4,493.7 356.4,153.5 378.6,153.5 378.6,493.7" fill="#6b6258"/>
+<polygon points="356.4,869.4 356.4,574.1 371.4,574.1 371.4,869.4" fill="#6b6258"/>
+<polygon points="371.4,574.1 559.8,574.1 559.8,596.9 371.4,596.9" fill="#6b6258"/>
+<polygon points="378.6,441.6 544.8,441.6 544.8,456.6 378.6,456.6" fill="#6b6258"/>
+<polygon points="639.6,441.6 825.0,441.6 825.0,456.6 639.6,456.6" fill="#6b6258"/>
+<polygon points="120.6,418.8 356.4,418.8 356.4,426.0 120.6,426.0" fill="#a39a8e"/>
+<polygon points="276.0,647.6 276.0,426.0 283.2,426.0 283.2,647.6" fill="#a39a8e"/>
+<polygon points="120.6,540.0 276.0,540.0 276.0,547.2 120.6,547.2" fill="#a39a8e"/>
+<polygon points="120.6,638.0 283.2,638.0 283.2,647.6 120.6,647.6" fill="#a39a8e"/>
+<polygon points="283.2,600.9 356.4,600.9 356.4,608.1 283.2,608.1" fill="#a39a8e"/>
+<polygon points="537.6,493.7 537.6,456.6 544.8,456.6 544.8,493.7" fill="#a39a8e"/>
+<polygon points="658.8,636.4 658.8,456.6 666.0,456.6 666.0,636.4" fill="#a39a8e"/>
+<polygon points="584.4,629.2 825.0,629.2 825.0,636.4 584.4,636.4" fill="#a39a8e"/>
+<polygon points="697.2,791.4 697.2,636.4 704.4,636.4 704.4,791.4" fill="#a39a8e"/>
+<polygon points="183.6,894.6 303.6,894.6 303.6,868.8 183.6,868.8" fill="#fff"/>
+<line x1="183.6" y1="885.3" x2="303.6" y2="885.3" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="183.6" y1="881.7" x2="303.6" y2="881.7" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="183.6" y1="878.1" x2="303.6" y2="878.1" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="397.2,894.6 517.2,894.6 517.2,868.8 397.2,868.8" fill="#fff"/>
+<line x1="397.2" y1="885.3" x2="517.2" y2="885.3" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="397.2" y1="881.7" x2="517.2" y2="881.7" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="397.2" y1="878.1" x2="517.2" y2="878.1" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="95.4,609.6 121.2,609.6 121.2,555.6 95.4,555.6" fill="#fff"/>
+<line x1="104.7" y1="609.6" x2="104.7" y2="555.6" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="108.3" y1="609.6" x2="108.3" y2="555.6" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="111.9" y1="609.6" x2="111.9" y2="555.6" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="162.0,178.7 306.0,178.7 306.0,152.9 162.0,152.9" fill="#fff"/>
+<line x1="162.0" y1="169.4" x2="306.0" y2="169.4" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="162.0" y1="165.8" x2="306.0" y2="165.8" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="162.0" y1="162.2" x2="306.0" y2="162.2" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="684.6,121.2 825.0,121.2 825.0,95.4 684.6,95.4" fill="#fff"/>
+<line x1="684.6" y1="111.9" x2="825.0" y2="111.9" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="684.6" y1="108.3" x2="825.0" y2="108.3" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="684.6" y1="104.7" x2="825.0" y2="104.7" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="824.4,393.6 850.2,393.6 850.2,315.6 824.4,315.6" fill="#fff"/>
+<line x1="833.7" y1="393.6" x2="833.7" y2="315.6" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="837.3" y1="393.6" x2="837.3" y2="315.6" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="840.9" y1="393.6" x2="840.9" y2="315.6" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="824.4,509.4 850.2,509.4 850.2,455.4 824.4,455.4" fill="#fff"/>
+<line x1="833.7" y1="509.4" x2="833.7" y2="455.4" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="837.3" y1="509.4" x2="837.3" y2="455.4" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="840.9" y1="509.4" x2="840.9" y2="455.4" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="718.8,816.6 778.8,816.6 778.8,790.8 718.8,790.8" fill="#fff"/>
+<line x1="718.8" y1="807.3" x2="778.8" y2="807.3" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="718.8" y1="803.7" x2="778.8" y2="803.7" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="718.8" y1="800.1" x2="778.8" y2="800.1" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="469.8,121.2 559.8,121.2 559.8,95.4 469.8,95.4" fill="#fff"/>
+<line x1="469.8" y1="111.9" x2="559.8" y2="111.9" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="469.8" y1="108.3" x2="559.8" y2="108.3" stroke="#3a7bd5" stroke-width="1.5"/>
+<line x1="469.8" y1="104.7" x2="559.8" y2="104.7" stroke="#3a7bd5" stroke-width="1.5"/>
+<polygon points="595.2,816.6 657.6,816.6 657.6,790.8 595.2,790.8" fill="#fff"/>
+<line x1="657.6" y1="816.0" x2="657.6" y2="878.4" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 595.2 816.0 A 62.4 62.4 0 0 0 657.6 878.4" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="594.0,637.0 648.0,637.0 648.0,628.6 594.0,628.6" fill="#fff"/>
+<line x1="594.0" y1="632.8" x2="594.0" y2="686.8" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 648.0 632.8 A 54.0 54.0 0 0 1 594.0 686.8" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="696.6,684.6 705.0,684.6 705.0,636.4 696.6,636.4" fill="#fff"/>
+<line x1="700.8" y1="636.4" x2="652.8" y2="636.4" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 700.8 684.4 A 48.0 48.0 0 0 1 652.8 636.4" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="658.2,549.6 666.6,549.6 666.6,502.8 658.2,502.8" fill="#fff"/>
+<line x1="662.4" y1="549.6" x2="709.2" y2="549.6" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 662.4 502.8 A 46.8 46.8 0 0 1 709.2 549.6" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="505.8,597.5 559.8,597.5 559.8,573.5 505.8,573.5" fill="#fff"/>
+<line x1="559.8" y1="585.5" x2="559.8" y2="639.5" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 505.8 585.5 A 54.0 54.0 0 0 0 559.8 639.5" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="295.8,608.7 343.8,608.7 343.8,600.3 295.8,600.3" fill="#fff"/>
+<line x1="343.8" y1="604.5" x2="343.8" y2="652.5" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 295.8 604.5 A 48.0 48.0 0 0 0 343.8 652.5" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="295.8,426.6 343.8,426.6 343.8,418.2 295.8,418.2" fill="#fff"/>
+<line x1="343.8" y1="422.4" x2="343.8" y2="374.4" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 295.8 422.4 A 48.0 48.0 0 0 1 343.8 374.4" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="275.4,603.0 283.8,603.0 283.8,558.0 275.4,558.0" fill="#fff"/>
+<line x1="279.6" y1="558.0" x2="234.6" y2="558.0" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 279.6 603.0 A 45.0 45.0 0 0 1 234.6 558.0" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="275.4,540.0 283.8,540.0 283.8,456.6 275.4,456.6" fill="#fff"/>
+<polygon points="378.6,121.2 469.8,121.2 469.8,95.4 378.6,95.4" fill="#fff"/>
+<line x1="378.6" y1="96.0" x2="378.6" y2="50.4" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 424.2 96.0 A 45.6 45.6 0 0 0 378.6 50.4" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="469.8" y1="96.0" x2="469.8" y2="50.4" stroke="#c0392b" stroke-width="1.5"/>
+<path d="M 424.2 96.0 A 45.6 45.6 0 0 1 469.8 50.4" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 2"/>
+<polygon points="544.8,457.2 639.6,457.2 639.6,441.0 544.8,441.0" fill="#fff"/>
+<polygon points="826.8,894.0 849.6,894.0 849.6,871.2 826.8,871.2" fill="#6b6258"/>
+<text x="601.8" y="273.1" font-size="13" text-anchor="middle" fill="#222">1. Кухня-гостиная</text>
+<text x="601.8" y="290.1" font-size="11" text-anchor="middle" fill="#555">модель 39.80 / план 39.87</text>
+<text x="601.8" y="305.1" font-size="11" text-anchor="middle" fill="#1b6b4f">Δ -0.07 м²</text>
+<text x="238.5" y="290.5" font-size="13" text-anchor="middle" fill="#222">2. Спальня</text>
+<text x="238.5" y="307.5" font-size="11" text-anchor="middle" fill="#555">модель 15.76 / план 16.00</text>
+<text x="238.5" y="322.5" font-size="11" text-anchor="middle" fill="#1b6b4f">Δ -0.24 м²</text>
+<text x="253.4" y="700.4" font-size="13" text-anchor="middle" fill="#222">3. Спальня</text>
+<text x="253.4" y="717.4" font-size="11" text-anchor="middle" fill="#555">модель 15.33 / план 15.27</text>
+<text x="253.4" y="732.4" font-size="11" text-anchor="middle" fill="#1b6b4f">Δ +0.06 м²</text>
+<text x="465.6" y="725.2" font-size="13" text-anchor="middle" fill="#222">4. Спальня</text>
+<text x="465.6" y="742.2" font-size="11" text-anchor="middle" fill="#555">модель 14.26 / план 14.05</text>
+<text x="465.6" y="757.2" font-size="11" text-anchor="middle" fill="#1b6b4f">Δ +0.21 м²</text>
+<text x="745.5" y="534.9" font-size="13" text-anchor="middle" fill="#222">5. Ванная</text>
+<text x="745.5" y="551.9" font-size="11" text-anchor="middle" fill="#555">модель 7.62 / план 7.47</text>
+<text x="745.5" y="566.9" font-size="11" text-anchor="middle" fill="#b8860b">Δ +0.15 м²</text>
+<text x="764.7" y="705.9" font-size="13" text-anchor="middle" fill="#222">6. Котельная</text>
+<text x="764.7" y="722.9" font-size="11" text-anchor="middle" fill="#555">модель 5.19 / план 5.25</text>
+<text x="764.7" y="737.9" font-size="11" text-anchor="middle" fill="#1b6b4f">Δ -0.06 м²</text>
+<text x="464.0" y="522.1" font-size="13" text-anchor="middle" fill="#222">7. Коридор</text>
+<text x="464.0" y="539.1" font-size="11" text-anchor="middle" fill="#555">модель 12.63 / план 15.00</text>
+<text x="464.0" y="554.1" font-size="11" text-anchor="middle" fill="#c0392b">Δ -2.37 м²</text>
+<text x="753.6" y="852.4" font-size="13" text-anchor="middle" fill="#222">8. Крыльцо</text>
+<text x="753.6" y="869.4" font-size="11" text-anchor="middle" fill="#555">модель 5.60 / план 5.00</text>
+<text x="753.6" y="884.4" font-size="11" text-anchor="middle" fill="#c0392b">Δ +0.60 м²</text>
+<text x="640.8" y="705.9" font-size="13" text-anchor="middle" fill="#222">9. Тамбур</text>
+<text x="640.8" y="722.9" font-size="11" text-anchor="middle" fill="#555">модель 4.86 / план 5.03</text>
+<text x="640.8" y="737.9" font-size="11" text-anchor="middle" fill="#b8860b">Δ -0.17 м²</text>
+<text x="198.3" y="475.0" font-size="13" text-anchor="middle" fill="#222">10. Гардеробная</text>
+<text x="198.3" y="492.0" font-size="11" text-anchor="middle" fill="#555">модель 4.92 / план 5.40</text>
+<text x="198.3" y="507.0" font-size="11" text-anchor="middle" fill="#c0392b">Δ -0.48 м²</text>
+<text x="198.3" y="584.6" font-size="13" text-anchor="middle" fill="#222">11. Душевая</text>
+<text x="198.3" y="601.6" font-size="11" text-anchor="middle" fill="#555">модель 3.92 / план 3.66</text>
+<text x="198.3" y="616.6" font-size="11" text-anchor="middle" fill="#c0392b">Δ +0.26 м²</text>
+<text x="472.8" y="948.0" font-size="13" text-anchor="middle">12.56 м</text>
+<text x="42.0" y="495.0" font-size="13" text-anchor="middle" transform="rotate(-90 42.0 495.0)">13.30 м</text>
+<text x="933.6" y="36.0" font-size="13" text-anchor="end" fill="#c0392b">Север: не указан</text>
+</svg>
