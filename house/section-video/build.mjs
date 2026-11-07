@@ -336,7 +336,7 @@ const html = `<template>
       <g id="cut-patches">${patches.join("\n")}</g>
       <g id="cut-sunlab">${sunLabels}</g>
       ${person}
-      <path id="cut-wave" d="${waveD}" fill="none" stroke="#2E6FD8" stroke-width="3.2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <path id="cut-wave" d="${waveD}" fill="none" stroke="#2E6FD8" stroke-width="3.2" stroke-linecap="butt" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
       <path id="cut-wavehead" d="M ${f(endP[0] - 4)} ${f(endP[1])} l 18 -10 l 0 20 z" fill="#2E6FD8"/>
       <g id="cut-wavelab"><text x="${f(X(10.95))}" y="${f(Z(0.98))}" font-size="15" font-weight="700" text-anchor="middle" fill="#1D52A8">сквозное проветривание</text><text x="${f(X(10.95))}" y="${f(Z(0.98) + 17)}" font-size="13" text-anchor="middle" fill="#1D52A8">двери открыты — условно</text></g>
       <g id="cut-sides">
