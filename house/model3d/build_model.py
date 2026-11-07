@@ -13,7 +13,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("plan"); ap.add_argument("mode", choices=["photo", "clay"]); ap.add_argument("out")
 ap.add_argument("--w", type=int, default=1600); ap.add_argument("--h", type=int, default=1200)
 ap.add_argument("--samples", type=int, default=96); ap.add_argument("--hour", type=float, default=15.0)
-ap.add_argument("--cam", default="sw"); ap.add_argument("--glb", default=None)
+ap.add_argument("--cam", default="sw"); ap.add_argument("--glb", default=None); ap.add_argument("--norender", action="store_true")
 args = ap.parse_args(sys.argv[1:])
 
 plan = json.load(open(args.plan, encoding="utf-8"))
@@ -167,7 +167,8 @@ for cl in plan["columns"]:
 # фронтоны: над наружными стенами вдоль X — от верха стены до низа кровли
 for w in plan["walls"]:
     if w["kind"] != "external" or abs(w["a"][1] - w["b"][1]) > 1e-9: continue
-    xa, xb = sorted([w["a"][0], w["b"][0]]); yc = w["a"][1]; t = w["thickness"] / 2
+    xa, xb = sorted([w["a"][0], w["b"][0]]); yc = w["a"][1]; t = w["thickness"] / 2 - 0.003
+    xa, xb = xa + 0.003, xb - 0.003
     xs = [xa] + ([XR] if xa < XR < xb else []) + [xb]
     prof = [(x, WT) for x in xs] + [(x, h_roof(x)) for x in reversed(xs)]
     n = len(prof)
@@ -180,7 +181,7 @@ for w in plan["walls"]:
     xc, t = w["a"][0], w["thickness"] / 2
     ya, yb = sorted([w["a"][1], w["b"][1]])
     top = min(h_roof(xc - t), h_roof(xc + t))
-    if top > WT + 0.01: box("infill_" + w["id"], xc - t, ya, WT, xc + t, yb, top, M_PL())
+    if top > WT + 0.01: box("infill_" + w["id"], xc - t + 0.012, ya + 0.012, WT, xc + t - 0.012, yb - 0.012, top, M_PL())  # утоплена глубже фронтонов
 # торец выступа у конька (кухня выше спального крыла)
 yW = max(p[1] for p in OUT if p[0] <= XR + 1e-6); yE = max(p[1] for p in OUT if p[0] >= XR - 1e-6)
 if yE > yW + 1e-6:
@@ -243,7 +244,7 @@ alt, az = sun_pos(plan["site"]["latitude"], plan["site"]["longitude"], SS["tz_ho
 north = plan["north"].get("angle_deg") or 0.0
 azp = az - north   # азимут в системе плана (верх листа = север, условно)
 to_sun = Vector((math.sin(math.radians(azp)) * math.cos(math.radians(alt)), math.cos(math.radians(azp)) * math.cos(math.radians(alt)), math.sin(math.radians(alt))))
-sun = bpy.data.lights.new("sun", "SUN"); sun.energy = 4.2 if args.mode == "photo" else 3.4; sun.angle = math.radians(0.6)
+sun = bpy.data.lights.new("sun", "SUN"); sun.energy = 3.9 if args.mode == "photo" else 3.4; sun.angle = math.radians(0.6)
 sob = bpy.data.objects.new("sun", sun); col.objects.link(sob)
 sob.rotation_euler = to_sun.to_track_quat("Z", "Y").to_euler()
 
@@ -259,7 +260,7 @@ if args.mode == "photo":
         if hasattr(sky, prop):
             try: setattr(sky, prop, val)
             except Exception: pass
-    wn.links.new(sky.outputs["Color"], bg.inputs["Color"]); bg.inputs["Strength"].default_value = 0.22
+    wn.links.new(sky.outputs["Color"], bg.inputs["Color"]); bg.inputs["Strength"].default_value = 0.4
 else:
     bg.inputs["Color"].default_value = (0.95, 0.95, 0.96, 1); bg.inputs["Strength"].default_value = 0.9
 
@@ -283,7 +284,7 @@ for look in ("AgX - Medium High Contrast", "Medium High Contrast", "None"):
     try: scene.view_settings.look = look; break
     except Exception: pass
 scene.render.filepath = args.out
-bpy.ops.render.render(write_still=True)
+if not args.norender: bpy.ops.render.render(write_still=True)
 if args.glb:
     bpy.ops.export_scene.gltf(filepath=args.glb, export_format="GLB")
 print(f"done {args.out}: sun alt {alt:.1f} az {az:.0f}")
