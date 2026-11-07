@@ -174,6 +174,13 @@ for w in plan["walls"]:
     v = [(x, yc - t, z) for x, z in prof] + [(x, yc + t, z) for x, z in prof]
     f = [tuple(range(n)), tuple(reversed(range(n, 2 * n)))] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
     add_mesh("gable_" + w["id"], v, f, M_PL())
+# наружные стены вдоль Y под скатом: заделка от верха стены до низа кровли (иначе виден чердак)
+for w in plan["walls"]:
+    if w["kind"] != "external" or abs(w["a"][0] - w["b"][0]) > 1e-9: continue
+    xc, t = w["a"][0], w["thickness"] / 2
+    ya, yb = sorted([w["a"][1], w["b"][1]])
+    top = min(h_roof(xc - t), h_roof(xc + t))
+    if top > WT + 0.01: box("infill_" + w["id"], xc - t, ya, WT, xc + t, yb, top, M_PL())
 # торец выступа у конька (кухня выше спального крыла)
 yW = max(p[1] for p in OUT if p[0] <= XR + 1e-6); yE = max(p[1] for p in OUT if p[0] >= XR - 1e-6)
 if yE > yW + 1e-6:
