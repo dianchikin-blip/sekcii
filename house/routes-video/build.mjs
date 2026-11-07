@@ -109,7 +109,7 @@ for (const o of plan.openings) {
   plate.push(`<rect x="${f(X(x0))}" y="${f(Y(y1))}" width="${f((x1 - x0) * S)}" height="${f((y1 - y0) * S)}" fill="${isWin ? "#E2EDF3" : "#FBFAF7"}"/>`);
 }
 for (const c of plan.columns) plate.push(`<polygon points="${pts(c.polygon)}" fill="#C9C4BB"/>`);
-const labelAt = { R3: [1.75, 1.1], R7: [6.3, 6.4], R1: [8.4, 12.1], R8: [10.9, 0.65], R4: [6.0, 1.2], R5: [10.85, 4.75], R9: [9.45, 2.7], R2: [2.375, 11.1] };
+const labelAt = plan.render_hints?.label_points?.routes || {};
 for (const r of plan.rooms) {
   const [cx, cy] = labelAt[r.id] || centroid(r.polygon);
   const small = r.area_table < 6;
@@ -130,7 +130,11 @@ const style = {
   groceries: { col: "#6B4FD6", ink: "#4E35B0", w: 4 },
 };
 const T0 = 0.3, DUR = 0.42, GAP = 0.04;
-routes.forEach((r, i) => { r.t0 = T0 + i * (DUR + GAP); r.st = style[r.id]; });
+const SPARE = [{ col: "#E3962B", ink: "#8A5208" }, { col: "#D9534F", ink: "#A12E2A" }, { col: "#C7A20F", ink: "#6E5A00" }, { col: "#17877D", ink: "#0F5F58" }, { col: "#6B4FD6", ink: "#4E35B0" }, { col: "#2E7DC9", ink: "#1D528A" }];
+routes.forEach((r, i) => {
+  r.t0 = T0 + i * (DUR + GAP);
+  r.st = style[r.id] || { ...SPARE[i % SPARE.length], w: Math.max(4, 21 - i * 4) };  // новые маршруты: цвет из запасной палитры, толщина по порядку
+});
 
 const lines = routes.map((r) => `<path id="rt-${r.id}" d="${r.d}" fill="none" stroke="${r.st.col}" stroke-width="${r.st.w}" stroke-linecap="butt" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`).join("\n");
 const ends = routes.map((r) => {
@@ -145,7 +149,7 @@ for (const r of routes) for (const dd of r.doors) {
   const t = r.t0 + (r.marks[dd.at] / r.L) * DUR;
   if (!(dd.id in firstReach)) firstReach[dd.id] = t;
 }
-const badgeOffset = { D5: [-0.75, 0], D4: [0, -0.62], A1: [-0.95, 0], D1: [-0.95, 0], D2: [-0.9, 0], D7: [-1.05, 0.3], D6: [-1.05, -0.3] };
+const badgeOffset = plan.render_hints?.door_badge_offsets || {};
 const badges = Object.entries(doorNo).map(([id, n]) => {
   const o = openById[id], g = doorGeom(o);
   const [ox, oy] = badgeOffset[id] || [0, -0.6];
@@ -201,7 +205,7 @@ const html = `<template>
       <g id="rt-badges">${badges}</g>
     </svg>
     <div id="rt-head">
-      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="k">${plan.meta.kicker}</div>
       <div class="t">Маршруты по дому</div>
       <div class="d">Линии идут через центры дверей · ○ старт, ● финиш</div>
     </div>

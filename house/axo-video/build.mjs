@@ -77,7 +77,7 @@ const centroid = (poly) => {
   }
   return [cx / (3 * a), cy / (3 * a)];
 };
-const labelPos = { R3: [2.0, 2.2], R7: [6.2, 6.0] }; // точки внутри неправильных комнат
+const labelPos = plan.render_hints?.label_points?.axo || {}; // точки внутри неправильных комнат
 const labels = [];
 for (const r of plan.rooms) {
   const [cx, cy] = labelPos[r.id] || centroid(r.polygon);
@@ -215,7 +215,7 @@ const html = `<template>
     </svg>
 
     <div id="axo-head">
-      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="k">${plan.meta.kicker}</div>
       <div class="t">Разнесённая<br>аксонометрия</div>
       <div class="d">Вид с юго-запада <span class="tag" style="margin:0 0 0 8px;font-size:15px">УСЛОВНО</span> · ${fmt(totalTable)} м² по проекту</div>
     </div>

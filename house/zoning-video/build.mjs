@@ -40,7 +40,7 @@ const centroid = (poly) => {
   }
   return [cx / (3 * a), cy / (3 * a)];
 };
-const labelAt = { R3: [2.0, 1.9], R7: [6.3, 6.0], R8: [10.6, 0.62] };
+const labelAt = plan.render_hints?.label_points?.zoning || {};
 const fills = order.map((o) => `<polygon id="zf-${o.id}" points="${pts(roomById[o.id].polygon)}" fill="${C[o.z].fill}"/>`).join("\n");
 const labels = order.map((o) => {
   const r = roomById[o.id];
@@ -120,7 +120,7 @@ const html = `<template>
       <g id="zn-labels">${labels}</g>
     </svg>
     <div id="zn-head">
-      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="k">${plan.meta.kicker}</div>
       <div class="t">Зонирование</div>
       <div class="d">День · ночь · службы и проходы — площади по экспликации</div>
     </div>

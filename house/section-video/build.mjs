@@ -346,7 +346,7 @@ const html = `<template>
     </svg>
 
     <div id="cut-head">
-      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="k">${plan.meta.kicker}</div>
       <div class="t">Разрез 1-1</div>
       <div class="d">Ступенчатый: окно на юге → окно на севере, смотрим на восток</div>
     </div>

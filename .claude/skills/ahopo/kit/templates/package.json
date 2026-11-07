@@ -1,0 +1,9 @@
+{
+  "name": "__NAME__",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npx --yes hyperframes@0.9.19 check",
+    "render": "npx --yes hyperframes@0.9.19 render"
+  }
+}

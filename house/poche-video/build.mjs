@@ -97,9 +97,9 @@ const stamp = `<g id="pc-stamp">
   <rect x="${SB.x}" y="${SB.y}" width="${SB.w}" height="${SB.h}" fill="#FFFFFF" stroke="#121212" stroke-width="2"/>
   <line x1="${SB.x}" y1="${SB.y + 118}" x2="${SB.x + SB.w}" y2="${SB.y + 118}" stroke="#121212" stroke-width="1"/>
   <line x1="${nx - 64}" y1="${SB.y + 118}" x2="${nx - 64}" y2="${SB.y + SB.h}" stroke="#121212" stroke-width="1"/>
-  <text x="${SB.x + 28}" y="${SB.y + 44}" font-size="15" font-weight="700" letter-spacing="2" fill="#8A6230">06-2018-АС · ЛИСТ 14</text>
-  <text x="${SB.x + 28}" y="${SB.y + 84}" font-size="30" font-weight="700" fill="#121212">Дом в Шигали</text>
-  <text x="${SB.x + 28}" y="${SB.y + 106}" font-size="16" fill="#5E574E">ул. Интересная, 10 · Высокогорский р-н, РТ</text>
+  <text x="${SB.x + 28}" y="${SB.y + 44}" font-size="15" font-weight="700" letter-spacing="2" fill="#8A6230">${plan.meta.code} · ПОШЕ-ПЛАН</text>
+  <text x="${SB.x + 28}" y="${SB.y + 84}" font-size="30" font-weight="700" fill="#121212">${plan.meta.title}</text>
+  <text x="${SB.x + 28}" y="${SB.y + 106}" font-size="16" fill="#5E574E">${plan.meta.address_short}</text>
   <text x="${SB.x + 28}" y="${SB.y + 152}" font-size="21" font-weight="700" fill="#121212">План первого этажа · поше</text>
   <text x="${SB.x + 28}" y="${SB.y + 180}" font-size="16" fill="#5E574E">${fmt(plan.area_summary.total_table_stated)} м² по экспликации · ${plan.rooms.length} помещений</text>
   <text x="${SB.x + 28}" y="${SB.y + 216}" font-size="15" fill="#5E574E">Масштаб графический</text>
@@ -134,7 +134,7 @@ const html = `<template>
       ${stamp}
     </svg>
     <div id="pc-head">
-      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="k">${plan.meta.kicker}</div>
       <div class="t">Поше-план</div>
       <div class="d">Стены — чёрным, проёмы — светлые, двери — дуги</div>
     </div>
