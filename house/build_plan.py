@@ -272,6 +272,15 @@ plan["furniture"] = dict(
     F("F36", "boiler", "R6", [11.45, 1.95, 12.09, 2.56], "E"),
   ])
 
+plan["finishes"] = dict(
+  facade=dict(material="штукатурка", color="#F2F0EC", source="выбор заказчика (в PDF — кирпич)"),
+  window_frames=dict(color="#6E7175", source="выбор заказчика — серые рамы"),
+  roof=dict(material="металлочерепица", color="#2E3133", source="условно — графит"),
+  plinth=dict(material="штукатурка/плитка", color="#5F6164", source="условно — цоколь от земли до пола"),
+  roof_overhang=dict(eaves=0.6, gables=0.4, source="условно; на разрезе 1–4 вылет ≈ 0,8 м"),
+  landscape=dict(note="газон и дорожка к крыльцу — условно, для фотореализма"),
+)
+
 plan["assumptions"] = [
   dict(id="A-north", topic="Север", value="≈ верх листа плана", status="условно (лист 13 PDF, роза ветров; поворот дома 10–20° не учтён)", question="Подтверди: гостиная с выходом на улицу смотрит на север, спальни 3 и 4 — на юг?"),
   dict(id="A-ext-wall", topic="Наружные стены", value="0,41 м везде", status="допущение",
