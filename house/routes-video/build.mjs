@@ -1,6 +1,7 @@
 // Генерирует compositions/routes.html — схему маршрутов по дому — СТРОГО из ../plan.json.
 // Запуск: node build.mjs
 import fs from "node:fs";
+import { furnitureSVG } from "../furniture.mjs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
 // Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
@@ -97,6 +98,7 @@ for (const r of routes) for (const dd of r.doors) if (!(dd.id in doorNo)) doorNo
 const plate = [];
 plate.push(`<polygon points="${pts(plan.outline.polygon)}" fill="#FFFFFF"/>`);
 for (const r of plan.rooms) plate.push(`<polygon points="${pts(r.polygon)}" fill="${r.id === "R8" ? "#ECE9E3" : "#FBFAF7"}"/>`);
+plate.push(furnitureSVG(plan, (p) => [X(p[0]), Y(p[1])], { stroke: "#D2CCC3", width: 1 }));
 for (const w of plan.walls) {
   const t = w.thickness / 2, hz = Math.abs(w.a[1] - w.b[1]) < 1e-9;
   const x0 = Math.min(w.a[0], w.b[0]) - (hz ? 0 : t), x1 = Math.max(w.a[0], w.b[0]) + (hz ? 0 : t);

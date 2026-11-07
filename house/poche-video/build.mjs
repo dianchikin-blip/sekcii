@@ -1,6 +1,7 @@
 // Генерирует compositions/poche.html — поше-план — СТРОГО из ../plan.json.
 // Запуск: node build.mjs
 import fs from "node:fs";
+import { furnitureSVG } from "../furniture.mjs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
 // Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
@@ -130,6 +131,7 @@ const html = `<template>
       </defs>
       <rect width="${W}" height="${HH}" fill="url(#dots)"/>
       <g id="pc-inside"><polygon points="${pts(plan.outline.polygon)}" fill="#FFFFFF"/></g>
+      <g id="pc-furn">${furnitureSVG(plan, (p) => [X(p[0]), Y(p[1])], { stroke: "#8C857B", width: 1.1 })}</g>
       <g id="pc-porch"><polygon points="${pts(roomById.R8.polygon)}" fill="none" stroke="#A39B8F" stroke-width="1.2" stroke-dasharray="5 4"/></g>
       <g id="pc-contours">${contours.join("\n")}</g>
       <g id="pc-fills">${fills.join("\n")}</g>
@@ -158,6 +160,7 @@ const html = `<template>
         tl.fromTo(el, hz ? { scaleX: 0, transformOrigin: "0% 50%" } : { scaleY: 0, transformOrigin: "50% 100%" },
           hz ? { scaleX: 1, duration: 0.2, ease: "power2.out" } : { scaleY: 1, duration: 0.2, ease: "power2.out" }, 0.7 + i * step);
       });
+      tl.fromTo("#pc-furn", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 1.95);
       tl.fromTo("#pc-doors path", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.35, ease: "power1.out", stagger: 0.03 }, 2.0);
       tl.fromTo("#pc-stamp", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 2.25);
       tl.fromTo("#pc-note", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 2.4);

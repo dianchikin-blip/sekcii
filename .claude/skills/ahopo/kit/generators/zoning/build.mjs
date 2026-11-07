@@ -1,6 +1,7 @@
 // Генерирует compositions/zoning.html — план зонирования — СТРОГО из ../plan.json.
 // Все площади — из экспликации (area_table); суммы проверяются, при расхождении сборка падает.
 import fs from "node:fs";
+import { furnitureSVG } from "../furniture.mjs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
 // Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
@@ -45,11 +46,13 @@ const centroid = (poly) => {
 };
 const labelAt = plan.render_hints?.label_points?.zoning || {};
 const fills = order.map((o) => `<polygon id="zf-${o.id}" points="${pts(roomById[o.id].polygon)}" fill="${C[o.z].fill}"/>`).join("\n");
+const FURN = furnitureSVG(plan, (p) => [X(p[0]), Y(p[1])], { stroke: "rgba(30,27,24,0.42)", width: 1, byRoom: true });
+const furn = order.map((o) => `<g id="zfu-${o.id}">${FURN[o.id] || ""}</g>`).join("\n");
 const labels = order.map((o) => {
   const r = roomById[o.id];
   const [cx, cy] = labelAt[o.id] || centroid(r.polygon);
   const small = r.area_table < 6;
-  return `<g id="zl-${o.id}"><text x="${f(X(cx))}" y="${f(Y(cy) - 2)}" font-size="${small ? 14 : 18}" font-weight="700" text-anchor="middle" fill="#1E1B18">${r.name.split(" (")[0]}</text>
+  return `<g id="zl-${o.id}" paint-order="stroke" stroke="${C[o.z].fill}" stroke-width="5" stroke-linejoin="round"><text x="${f(X(cx))}" y="${f(Y(cy) - 2)}" font-size="${small ? 14 : 18}" font-weight="700" text-anchor="middle" fill="#1E1B18">${r.name.split(" (")[0]}</text>
 <text x="${f(X(cx))}" y="${f(Y(cy) + (small ? 15 : 19))}" font-size="${small ? 13 : 16}" text-anchor="middle" fill="#3A3530">${fmt(r.area_table)} м²</text></g>`;
 }).join("\n");
 const wallsSvg = plan.walls.map((w) => {
@@ -120,6 +123,7 @@ const html = `<template>
     <svg id="zn-svg" viewBox="0 0 ${W} ${HH}" width="${W}" height="${HH}">
       <g id="zn-base"><polygon points="${pts(plan.outline.polygon)}" fill="#FFFFFF"/><polygon points="${pts(roomById.R8.polygon)}" fill="#FFFFFF"/></g>
       <g id="zn-fills">${fills}</g>
+      <g id="zn-furn">${furn}</g>
       <g id="zn-walls">${wallsSvg.join("\n")}${doorGaps}</g>
       <g id="zn-labels">${labels}</g>
     </svg>
@@ -165,6 +169,7 @@ const html = `<template>
       }
       for (const o of ORDER) {
         tl.fromTo("#zf-" + o.id, { opacity: 0 }, { opacity: 1, duration: FD, ease: "power2.out" }, o.t);
+        tl.fromTo("#zfu-" + o.id, { opacity: 0 }, { opacity: 1, duration: FD, ease: "power2.out" }, o.t + 0.04);
         tl.fromTo("#zl-" + o.id, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: FD, ease: "power2.out" }, o.t + 0.05);
         tl.fromTo("#tr-" + o.id, { opacity: 0.25 }, { opacity: 1, duration: FD }, o.t);
       }

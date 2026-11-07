@@ -47,7 +47,8 @@ bash .claude/skills/ahopo/kit/new_project.sh <папка>   # например h
 4. **Проверь геометрию глазами.** Запусти `python3 render_plan.py plan.json plan_check.svg`, отрендери PNG через Playwright и сравни с оригиналом.
 5. **Сверь площади.** Таблица: по плану / посчитано / разница. Нестыковки цепочек размеров перечисли в `discrepancies_dimensions`.
 6. **Допущения** — в `assumptions` с полем `question` для Дианы.
-7. **Данные для роликов:** `meta.client_kicker` и `meta.client_disclaimer` (для клиентской версии), `A-roof.value.ridge_x/ridge_z` (конёк двускатной крыши в аксонометрии), `site` (город, широта, долгота), `sections[0].path` (линия разреза), `zones` и `routes`, `zoning`, `shadow_study`, `render_hints` (точки подписей и смещения бейджей дверей, необязательно), `meta.kicker/title/code/address_short`.
+7. **Мебель** — `furniture.items[]`. Если расстановка есть на плане, сними её по масштабу. Привязывай к граням стен, чтобы кровати и кухня стояли вплотную к стене. Рисует её общий модуль `furniture.mjs` на плане дома, зонировании, маршрутах и полу аксонометрии. Следи, чтобы подписи комнат не легли на кровати и диваны: двигай их через `render_hints.label_points`.
+8. **Данные для роликов:** `meta.client_kicker` и `meta.client_disclaimer` (для клиентской версии), `A-roof.value.ridge_x/ridge_z` (конёк двускатной крыши в аксонометрии), `site` (город, широта, долгота), `sections[0].path` (линия разреза), `zones` и `routes`, `zoning`, `shadow_study`, `render_hints` (точки подписей и смещения бейджей дверей, необязательно), `meta.kicker/title/code/address_short`.
 
 Покажи Диане сверку площадей и вопросы. Дальше иди по её ответам или с пометками «условно».
 

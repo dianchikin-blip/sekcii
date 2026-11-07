@@ -1,6 +1,7 @@
 // Генерирует compositions/axo.html — разнесённую аксонометрию — СТРОГО из ../plan.json.
 // Запуск: node build.mjs
 import fs from "node:fs";
+import { furnitureSVG } from "../furniture.mjs";
 
 const plan = JSON.parse(fs.readFileSync(new URL("../plan.json", import.meta.url), "utf8"));
 // Аудитория: AUDIENCE=client node build.mjs — чистая версия для клиента (без технических отметок)
@@ -42,6 +43,7 @@ const roomColor = (name) =>
 const floor = [];
 floor.push(`<polygon points="${pts(out.map((p) => P(...p)))}" fill="#D9D3C8"/>`); // подложка под стенами
 for (const r of plan.rooms) floor.push(`<polygon points="${pts(r.polygon.map((p) => P(...p)))}" fill="${roomColor(r.name)}"/>`);
+floor.push(furnitureSVG(plan, (p) => P(p[0], p[1]), { stroke: "#8C8377", width: 0.9 }));
 // дуги открывания дверей на полу
 const wallById = Object.fromEntries(plan.walls.map((w) => [w.id, w]));
 for (const o of plan.openings) {
@@ -88,7 +90,7 @@ for (const r of plan.rooms) {
   const k = big ? 1.25 : (r.area_table < 6 ? 0.8 : 1);
   const [ex, ey] = P(cx, cy);
   const m = `matrix(${f(C * S / 100 * 100) / 100},${-Sn},${C},${Sn},${f(ex)},${f(ey)})`;
-  labels.push(`<g data-layout-allow-overlap transform="matrix(${(C).toFixed(4)},${(-Sn).toFixed(4)},${C.toFixed(4)},${Sn.toFixed(4)},${f(ex)},${f(ey)})">`
+  labels.push(`<g data-layout-allow-overlap paint-order="stroke" stroke="${roomColor(r.name)}" stroke-width="4" stroke-linejoin="round" transform="matrix(${(C).toFixed(4)},${(-Sn).toFixed(4)},${C.toFixed(4)},${Sn.toFixed(4)},${f(ex)},${f(ey)})">`
     + `<text x="0" y="${f(-0.08 * S * k)}" text-anchor="middle" font-size="${f(0.42 * S * k)}" font-weight="700" fill="#2A2724">${r.name.split(" (")[0]}</text>`
     + `<text x="0" y="${f(0.42 * S * k)}" text-anchor="middle" font-size="${f(0.36 * S * k)}" fill="#5E574E">${fmt(r.area_table)} м²</text></g>`);
 }

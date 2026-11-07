@@ -21,3 +21,4 @@
 | `zoning.zones[]` | `{id: day\|night\|service, name, rooms:[…]}` — каждая комната ровно в одной зоне | zoning |
 | `shadow_study` | `{date:"YYYY-MM-DD", tz_hours, tz_name, wall_height, hours:[8,18], freeze:[8,12,18], note}` | shadows |
 | `render_hints` (необязательно) | `label_points.{axo,routes,zoning,shadows}.{roomId:[x,y]}`, `door_badge_offsets.{doorId:[dx,dy]}` | подписи в неудобных комнатах |
+| `furniture.items[]` | `{id, type, room, box:[x0,y0,x1,y1], head: N\|S\|E\|W}` — type: bed, nightstand, sofa, coffee_table, table, chair, fridge, counter, sink, stove, toilet, bidet, washbasin, bath, shower, shelves, tv_unit, storage, boiler; `head` — сторона «к стене» (изголовье, спинка, бачок) | poche, zoning, routes, пол аксонометрии (через `furniture.mjs`) |

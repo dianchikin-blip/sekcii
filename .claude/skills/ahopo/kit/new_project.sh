@@ -19,4 +19,5 @@ for d in axo section routes poche zoning shadows; do
 done
 cp "$KIT/build_sheet.mjs" "$DST/sheet/build_sheet.mjs"
 cp "$KIT/render_plan.py" "$DST/render_plan.py"
+cp "$KIT/furniture.mjs" "$DST/furniture.mjs"   # мебель условными знаками — общий модуль для генераторов
 echo "Готово: $DST. Положи plan.json в $DST и собирай по шагам из SKILL.md."
