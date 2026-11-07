@@ -1,0 +1,265 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #F3F0EA; font-family: "Inter", sans-serif; color: #23201C; }
+    #cut-svg { position: absolute; inset: 0; }
+    #cut-head { position: absolute; left: 64px; right: 64px; top: 84px; }
+    #cut-head .k { font-size: 22px; font-weight: 700; letter-spacing: .14em; color: #8A6230; }
+    #cut-head .t { font-size: 58px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin-top: 12px; }
+    #cut-head .d { font-size: 23px; color: #5E574E; margin-top: 12px; }
+    .tag { display: inline-block; font-size: 14px; font-weight: 700; letter-spacing: .06em; color: #9A4322; border: 1.5px solid #9A4322; border-radius: 6px; padding: 1px 7px; vertical-align: 3px; }
+    #cut-legend { position: absolute; left: 440px; right: 56px; top: 400px; font-size: 19px; line-height: 1.35; color: #3A3530; }
+    #cut-legend .row { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; }
+    #cut-legend .sw { flex: 0 0 46px; height: 22px; position: relative; }
+    #cut-legend b { color: #23201C; }
+    #cut-legend .muted { color: #5E574E; font-size: 17px; }
+    #cut-foot { position: absolute; left: 64px; right: 64px; bottom: 70px; font-size: 19px; line-height: 1.45; color: #5E574E; border-top: 1.5px solid #D8D1C5; padding-top: 16px; }
+    #cut-foot b { color: #9A4322; }
+  </style>
+  <div id="root" data-composition-id="cut" data-width="1080" data-height="1920">
+    <svg id="cut-svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+      <defs>
+        <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="10" height="10" fill="#E6DFD2"/><line x1="0" y1="0" x2="0" y2="10" stroke="#A89D8C" stroke-width="1.4"/>
+        </pattern>
+        <marker id="wavehead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#2E6FD8"/>
+        </marker>
+      </defs>
+      <g id="cut-mini">
+        <polygon points="187.0,538.2 365.6,538.2 365.6,409.8 187.0,409.8" fill="#E7E1D6"/>
+<polygon points="83.8,529.1 178.2,529.1 178.2,432.9 83.8,432.9" fill="#E7E1D6"/>
+<polygon points="83.8,709.4 178.2,709.4 178.2,604.8 148.9,604.8 148.9,620.7 83.8,620.7" fill="#E7E1D6"/>
+<polygon points="184.2,709.4 259.5,709.4 259.5,600.4 184.2,600.4" fill="#E7E1D6"/>
+<polygon points="302.0,613.3 365.6,613.3 365.6,544.2 302.0,544.2" fill="#E7E1D6"/>
+<polygon points="317.4,678.2 365.6,678.2 365.6,616.2 317.4,616.2" fill="#E7E1D6"/>
+<polygon points="148.9,602.0 178.2,602.0 178.2,591.3 269.4,591.3 269.4,613.3 299.1,613.3 299.1,544.2 253.5,544.2 253.5,559.1 178.2,559.1 178.2,532.0 148.9,532.0" fill="#E7E1D6"/>
+<polygon points="269.4,719.2 366.3,719.2 366.3,710.1 375.4,710.1 375.4,688.0 269.4,688.0" fill="#E7E1D6"/>
+<polygon points="269.4,678.2 314.5,678.2 314.5,616.2 269.4,616.2" fill="#E7E1D6"/>
+<polygon points="83.8,577.6 146.0,577.6 146.0,532.0 83.8,532.0" fill="#E7E1D6"/>
+<polygon points="83.8,616.8 146.0,616.8 146.0,580.5 83.8,580.5" fill="#E7E1D6"/>
+<rect x="74.0" y="709.4" width="195.4" height="9.8" fill="#23201C"/>
+<rect x="74.0" y="423.0" width="9.8" height="296.2" fill="#23201C"/>
+<rect x="74.0" y="423.0" width="103.2" height="9.8" fill="#23201C"/>
+<rect x="177.2" y="400.0" width="9.8" height="23.0" fill="#23201C"/>
+<rect x="177.2" y="400.0" width="198.2" height="9.8" fill="#23201C"/>
+<rect x="365.6" y="400.0" width="9.8" height="288.0" fill="#23201C"/>
+<rect x="269.4" y="678.2" width="106.1" height="9.8" fill="#23201C"/>
+<rect x="259.5" y="678.2" width="9.8" height="41.0" fill="#23201C"/>
+<rect x="259.5" y="591.3" width="9.8" height="86.9" fill="#23201C"/>
+<rect x="178.2" y="423.0" width="8.9" height="136.1" fill="#23201C"/>
+<rect x="178.2" y="591.3" width="6.0" height="118.1" fill="#23201C"/>
+<rect x="184.2" y="591.3" width="75.4" height="9.1" fill="#23201C"/>
+<rect x="187.0" y="538.2" width="66.5" height="6.0" fill="#23201C"/>
+<rect x="291.4" y="538.2" width="74.2" height="6.0" fill="#23201C"/>
+<rect x="83.8" y="529.1" width="94.3" height="2.9" fill="#8C857B"/>
+<rect x="146.0" y="532.0" width="2.9" height="88.7" fill="#8C857B"/>
+<rect x="83.8" y="577.6" width="62.2" height="2.9" fill="#8C857B"/>
+<rect x="83.8" y="616.8" width="65.0" height="3.8" fill="#8C857B"/>
+<rect x="148.9" y="602.0" width="29.3" height="2.9" fill="#8C857B"/>
+<rect x="250.6" y="544.2" width="2.9" height="14.8" fill="#8C857B"/>
+<rect x="299.1" y="544.2" width="2.9" height="71.9" fill="#8C857B"/>
+<rect x="269.4" y="613.3" width="96.2" height="2.9" fill="#8C857B"/>
+<rect x="314.5" y="616.2" width="2.9" height="62.0" fill="#8C857B"/>
+<rect x="109.0" y="708.9" width="48.0" height="10.8" fill="#9CC3DA"/>
+<rect x="194.5" y="708.9" width="48.0" height="10.8" fill="#9CC3DA"/>
+<rect x="68.6" y="583.8" width="10.8" height="21.6" fill="#9CC3DA"/>
+<rect x="100.4" y="422.5" width="57.6" height="10.8" fill="#9CC3DA"/>
+<rect x="309.4" y="399.5" width="56.2" height="10.8" fill="#9CC3DA"/>
+<rect x="370.0" y="487.8" width="10.8" height="31.2" fill="#9CC3DA"/>
+<rect x="370.0" y="543.8" width="10.8" height="21.6" fill="#9CC3DA"/>
+<rect x="323.1" y="677.7" width="24.0" height="10.8" fill="#9CC3DA"/>
+<rect x="223.5" y="399.5" width="36.0" height="10.8" fill="#9CC3DA"/>
+<rect x="273.7" y="677.7" width="25.0" height="10.8" fill="#F3F0EA"/>
+<rect x="273.2" y="612.8" width="21.6" height="3.8" fill="#F3F0EA"/>
+<rect x="314.0" y="616.2" width="3.8" height="19.3" fill="#F3F0EA"/>
+<rect x="298.6" y="562.7" width="3.8" height="18.7" fill="#F3F0EA"/>
+<rect x="237.9" y="590.8" width="21.6" height="10.1" fill="#F3F0EA"/>
+<rect x="153.9" y="601.5" width="19.2" height="3.8" fill="#F3F0EA"/>
+<rect x="153.9" y="528.6" width="19.2" height="3.8" fill="#F3F0EA"/>
+<rect x="145.5" y="584.8" width="3.8" height="18.0" fill="#F3F0EA"/>
+<rect x="145.5" y="544.2" width="3.8" height="33.4" fill="#F3F0EA"/>
+<rect x="187.0" y="399.5" width="36.5" height="10.8" fill="#F3F0EA"/>
+<rect x="253.5" y="537.8" width="37.9" height="7.0" fill="#F3F0EA"/>
+        <text x="224.7" y="386.0" font-size="15" font-weight="700" text-anchor="middle" fill="#23201C">С ↑ <tspan fill="#9A4322" font-size="12">условно</tspan></text>
+      </g>
+      <path id="cut-line" d="M 240.3 743.2 L 240.3 575.2 L 273.2 575.2 L 273.2 474.4 L 328.4 474.4 L 328.4 376.0" fill="none" stroke="#C0392B" stroke-width="3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" stroke-linejoin="round"/>
+      <g id="cut-line-ends"><path d="M 240.3 743.2 h 22 m -7 -6 l 7 6 l -7 6" fill="none" stroke="#C0392B" stroke-width="2.4"/>
+    <text x="232.3" y="748.2" font-size="16" font-weight="700" text-anchor="end" fill="#C0392B">1</text><path d="M 328.4 376.0 h 22 m -7 -6 l 7 6 l -7 6" fill="none" stroke="#C0392B" stroke-width="2.4"/>
+    <text x="320.4" y="381.0" font-size="16" font-weight="700" text-anchor="end" fill="#C0392B">1</text></g>
+
+      <g id="cut-ground"><rect x="0" y="1331.8" width="1080" height="165.3" fill="url(#hatch)"/>
+<rect x="151.0" y="1319.3" width="771.4" height="12.5" fill="url(#hatch)"/>
+<line x1="0" y1="1331.8" x2="1080" y2="1331.8" stroke="#23201C" stroke-width="2"/></g>
+      <g id="cut-beyond"><rect x="363.3" y="1169.6" width="75.4" height="106.1" fill="none" stroke="#5C564E" stroke-width="1.2"/>
+<line x1="401.0" y1="1275.8" x2="401.0" y2="1169.6" stroke="#5C564E" stroke-width="0.8"/>
+<text x="401.0" y="1292.8" font-size="12" text-anchor="middle" fill="#5C564E">окно за разрезом</text>
+<rect x="544.2" y="1188.2" width="45.2" height="114.8" fill="none" stroke="#5C564E" stroke-width="1.2"/>
+<line x1="544.2" y1="1188.2" x2="585.5" y2="1245.6" stroke="#5C564E" stroke-width="0.8" stroke-dasharray="4 3"/>
+<text x="566.9" y="1183.2" font-size="12" text-anchor="middle" fill="#5C564E">дверь за разрезом</text>
+<line x1="635.2" y1="1138.8" x2="898.6" y2="1138.8" stroke="#5C564E" stroke-width="0.6"/>
+<line x1="499.6" y1="1138.8" x2="613.2" y2="1138.8" stroke="#5C564E" stroke-width="0.6"/>
+<line x1="174.8" y1="1138.8" x2="485.1" y2="1138.8" stroke="#5C564E" stroke-width="0.6"/><text x="766.9" y="1159.8" font-size="18" font-weight="700" text-anchor="middle" fill="#23201C">Спальня</text>
+<text x="556.4" y="1159.8" font-size="16" font-weight="700" text-anchor="middle" fill="#23201C">Коридор</text>
+<text x="329.9" y="1159.8" font-size="18" font-weight="700" text-anchor="middle" fill="#23201C">Кухня-гостиная</text></g>
+      <g id="cut-black"><rect x="151.0" y="1310.0" width="771.4" height="9.3" fill="#141414"/>
+<rect x="151.0" y="1303.0" width="771.4" height="7.0" fill="#8C857B"/>
+<rect x="151.0" y="1121.4" width="771.4" height="17.4" fill="#141414"/>
+<rect x="898.6" y="1275.8" width="23.8" height="34.2" fill="#141414"/>
+<rect x="898.6" y="1138.8" width="23.8" height="30.9" fill="#141414"/>
+<rect x="613.2" y="1138.8" width="22.0" height="49.4" fill="#141414"/>
+<rect x="485.1" y="1138.8" width="14.5" height="49.4" fill="#141414"/>
+<rect x="151.0" y="1275.8" width="23.8" height="34.2" fill="#141414"/>
+<rect x="151.0" y="1138.8" width="23.8" height="30.9" fill="#141414"/>
+<rect x="898.6" y="1319.3" width="23.8" height="58.9" fill="#141414"/>
+<rect x="901.8" y="1378.2" width="17.4" height="87.0" fill="#141414"/>
+<rect x="613.2" y="1319.3" width="22.0" height="58.9" fill="#141414"/>
+<rect x="615.5" y="1378.2" width="17.4" height="87.0" fill="#141414"/>
+<rect x="481.3" y="1319.3" width="22.0" height="58.9" fill="#141414"/>
+<rect x="483.6" y="1378.2" width="17.4" height="87.0" fill="#141414"/>
+<rect x="151.0" y="1319.3" width="23.8" height="58.9" fill="#141414"/>
+<rect x="154.2" y="1378.2" width="17.4" height="87.0" fill="#141414"/><line x1="910.5" y1="1275.8" x2="910.5" y2="1169.6" stroke="#4E8FB8" stroke-width="2"/>
+<line x1="922.4" y1="1275.8" x2="898.6" y2="1275.8" stroke="#141414" stroke-width="1"/>
+<line x1="162.9" y1="1275.8" x2="162.9" y2="1169.6" stroke="#4E8FB8" stroke-width="2"/>
+<line x1="174.8" y1="1275.8" x2="151.0" y2="1275.8" stroke="#141414" stroke-width="1"/></g>
+      <g id="cut-dims"><line x1="141.0" y1="1535.0" x2="932.4" y2="1535.0" stroke="#23201C" stroke-width="1"/>
+<line x1="917.4" y1="1540.0" x2="927.4" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="922.4" y1="1503.0" x2="922.4" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="910.5" y="1513.0" font-size="12" text-anchor="middle" fill="#23201C">0,41</text>
+<line x1="893.6" y1="1540.0" x2="903.6" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="898.6" y1="1503.0" x2="898.6" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="766.9" y="1527.0" font-size="16" text-anchor="middle" fill="#23201C">4,54</text>
+<line x1="630.2" y1="1540.0" x2="640.2" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="635.2" y1="1503.0" x2="635.2" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="624.2" y="1513.0" font-size="12" text-anchor="middle" fill="#23201C">0,38</text>
+<line x1="608.2" y1="1540.0" x2="618.2" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="613.2" y1="1503.0" x2="613.2" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="556.4" y="1527.0" font-size="16" text-anchor="middle" fill="#23201C">1,96</text>
+<line x1="494.6" y1="1540.0" x2="504.6" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="499.6" y1="1503.0" x2="499.6" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="492.3" y="1513.0" font-size="12" text-anchor="middle" fill="#23201C">0,25</text>
+<line x1="480.1" y1="1540.0" x2="490.1" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="485.1" y1="1503.0" x2="485.1" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="329.9" y="1527.0" font-size="16" text-anchor="middle" fill="#23201C">5,35</text>
+<line x1="169.8" y1="1540.0" x2="179.8" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="174.8" y1="1503.0" x2="174.8" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<text x="162.9" y="1513.0" font-size="12" text-anchor="middle" fill="#23201C">0,41</text>
+<line x1="146.0" y1="1540.0" x2="156.0" y2="1530.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="151.0" y1="1503.0" x2="151.0" y2="1543.0" stroke="#23201C" stroke-width="0.6"/>
+<line x1="141.0" y1="1587.0" x2="932.4" y2="1587.0" stroke="#23201C" stroke-width="1"/>
+<line x1="146.0" y1="1592.0" x2="156.0" y2="1582.0" stroke="#23201C" stroke-width="1.6"/>
+<line x1="917.4" y1="1592.0" x2="927.4" y2="1582.0" stroke="#23201C" stroke-width="1.6"/>
+<text x="536.7" y="1579.0" font-size="18" font-weight="700" text-anchor="middle" fill="#23201C">13,30 — по линии разреза</text>
+<line x1="87.0" y1="1121.4" x2="137.0" y2="1121.4" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1121.4 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1126.4" font-size="14" text-anchor="end" fill="#9A4322">+3,252 у.</text>
+<line x1="87.0" y1="1138.8" x2="137.0" y2="1138.8" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1138.8 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1143.8" font-size="14" text-anchor="end" fill="#9A4322">+2,952 у.</text>
+<line x1="87.0" y1="1169.6" x2="137.0" y2="1169.6" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1169.6 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1174.6" font-size="14" text-anchor="end" fill="#23201C">+2,420</text>
+<line x1="87.0" y1="1188.2" x2="137.0" y2="1188.2" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1188.2 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1193.2" font-size="14" text-anchor="end" fill="#9A4322">+2,100 у.</text>
+<line x1="87.0" y1="1275.8" x2="137.0" y2="1275.8" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1275.8 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1280.8" font-size="14" text-anchor="end" fill="#23201C">+0,590</text>
+<line x1="87.0" y1="1303.0" x2="137.0" y2="1303.0" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1303.0 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1308.0" font-size="14" text-anchor="end" fill="#23201C">+0,120</text>
+<line x1="87.0" y1="1310.0" x2="137.0" y2="1310.0" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1310.0 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1325.0" font-size="14" text-anchor="end" fill="#23201C">±0,000</text>
+<line x1="85.0" y1="1310.0" x2="81.0" y2="1320.0" stroke="#23201C" stroke-width="0.6"/>
+<line x1="87.0" y1="1331.8" x2="137.0" y2="1331.8" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1331.8 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1342.0" font-size="14" text-anchor="end" fill="#9A4322">−0,375 у.</text>
+<line x1="85.0" y1="1331.8" x2="81.0" y2="1337.0" stroke="#23201C" stroke-width="0.6"/>
+<line x1="87.0" y1="1378.2" x2="137.0" y2="1378.2" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1378.2 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1383.2" font-size="14" text-anchor="end" fill="#9A4322">−1,175 у.</text>
+<line x1="87.0" y1="1465.2" x2="137.0" y2="1465.2" stroke="#23201C" stroke-width="0.8"/>
+<path d="M 87.0 1465.2 l 6 -7 l 6 7" fill="none" stroke="#23201C" stroke-width="1"/>
+<text x="79.0" y="1470.2" font-size="14" text-anchor="end" fill="#9A4322">−2,675 у.</text></g>
+      <g id="cut-sun"><line class="ray-s" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" x1="1050.0" y1="968.2" x2="837.9" y2="1303.0" stroke="#E0A21A" stroke-width="2.4"/>
+<line class="ray-s" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" x1="1050.0" y1="1036.8" x2="881.4" y2="1303.0" stroke="#E0A21A" stroke-width="2.4"/>
+<line class="ray-w" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" x1="1050.0" y1="1145.4" x2="635.2" y2="1224.3" stroke="#D2601A" stroke-width="2.4"/>
+<line class="ray-w" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" x1="1050.0" y1="1247.0" x2="755.3" y2="1303.0" stroke="#D2601A" stroke-width="2.4"/></g>
+      <g id="cut-patches"><rect class="patch" x="837.9" y="1298.0" width="43.4" height="5" fill="#E0A21A"/>
+<rect class="patch" x="635.2" y="1298.0" width="120.1" height="5" fill="#D2601A"/>
+<rect class="patch" x="635.2" y="1224.3" width="5" height="78.8" fill="#D2601A"/></g>
+      <g id="cut-sunlab">
+  <path d="M 968.4 1169.6 A 46 46 0 0 0 947.0 1130.8" fill="none" stroke="#E0A21A" stroke-width="1.5"/><path d="M 1042.4 1169.6 A 120 120 0 0 0 1040.3 1147.2" fill="none" stroke="#D2601A" stroke-width="1.5"/>
+  <line x1="922.4" y1="1169.6" x2="1052.4" y2="1169.6" stroke="#8C857B" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="976.4" y="1129.6" font-size="17" font-weight="700" fill="#7E5600">57,7°</text>
+  <text x="986.4" y="1189.6" font-size="17" font-weight="700" fill="#A1430C">10,8°</text>
+  <g class="dimsun">
+    <line x1="898.6" y1="1285.6" x2="837.9" y2="1285.6" stroke="#B07C0A" stroke-width="1.4"/>
+    <path d="M 837.9 1280.6 v 10 M 898.6 1280.6 v 10" stroke="#B07C0A" stroke-width="1.4"/>
+    <text x="831.9" y="1290.6" font-size="16" font-weight="700" text-anchor="end" fill="#7E5600">лето 1,05 м</text>
+    <line x1="898.6" y1="1247.9" x2="635.2" y2="1247.9" stroke="#D2601A" stroke-width="1.4"/>
+    <path d="M 635.2 1242.9 v 10 M 898.6 1242.9 v 10" stroke="#D2601A" stroke-width="1.4"/>
+    <text x="766.9" y="1266.9" font-size="15" font-weight="700" text-anchor="middle" fill="#A1430C">зима 4,54 м · по стене до 1,36 м</text>
+  </g></g>
+      <g id="cut-person" fill="#23201C">
+  <circle cx="1038.4" cy="1237.8" r="6.4"/>
+  <path d="M 1026.8 1246.5 h 23.2 l 1.7 36.0 h -5.2 v 49.3 h -5.8 v -31.9 h -4.6 v 31.9 h -5.8 v -49.3 h -5.2 z"/>
+  <line x1="1014.0" y1="1331.8" x2="1014.0" y2="1230.3" stroke="#23201C" stroke-width="1"/>
+  <line x1="1010.6" y1="1230.3" x2="1017.5" y2="1230.3" stroke="#23201C" stroke-width="1"/>
+  <text x="1009.4" y="1285.3" font-size="14" text-anchor="end" fill="#23201C">1,75 м</text>
+</g>
+      <path id="cut-wave" d="M 980.4 1225.9 L 977.5 1223.3 L 974.6 1221.1 L 971.7 1219.4 L 968.8 1218.5 L 965.9 1218.5 L 963.0 1219.4 L 960.1 1221.1 L 957.2 1223.3 L 954.3 1225.9 L 951.4 1228.5 L 948.5 1230.7 L 945.6 1232.4 L 942.7 1233.3 L 939.8 1233.3 L 936.9 1232.4 L 934.0 1230.7 L 931.1 1228.5 L 928.2 1225.9 L 925.3 1223.3 L 922.4 1221.1 L 919.5 1219.4 L 916.6 1218.5 L 913.7 1218.5 L 910.8 1219.4 L 907.9 1221.1 L 905.0 1223.3 L 902.1 1225.9 L 899.2 1228.5 L 896.3 1230.7 L 893.4 1232.4 L 890.5 1233.3 L 887.6 1233.3 L 884.7 1232.4 L 881.8 1230.7 L 878.9 1228.5 L 876.0 1225.9 L 873.1 1223.3 L 870.2 1221.1 L 867.3 1219.4 L 864.4 1218.5 L 861.5 1218.5 L 858.6 1219.4 L 855.7 1221.1 L 852.8 1223.3 L 849.9 1225.9 L 847.0 1228.5 L 844.1 1230.7 L 841.2 1232.4 L 838.3 1233.3 L 835.4 1233.3 L 832.5 1232.4 L 829.6 1230.7 L 826.7 1228.5 L 823.8 1225.9 L 820.9 1223.3 L 818.0 1221.1 L 815.1 1219.4 L 812.2 1218.5 L 809.3 1218.5 L 806.4 1219.4 L 803.5 1221.1 L 800.6 1223.3 L 797.7 1225.9 L 794.8 1228.5 L 791.9 1230.7 L 789.0 1232.4 L 786.1 1233.3 L 783.2 1233.3 L 780.3 1232.4 L 777.4 1230.7 L 774.5 1228.5 L 771.6 1225.9 L 768.7 1223.3 L 765.8 1221.1 L 762.9 1219.4 L 760.0 1218.5 L 757.1 1218.5 L 754.2 1219.4 L 751.3 1221.1 L 748.4 1223.3 L 745.5 1225.9 L 742.6 1228.5 L 739.7 1230.7 L 736.8 1232.4 L 733.9 1233.3 L 731.0 1233.3 L 728.1 1232.4 L 725.2 1230.7 L 722.3 1228.5 L 719.4 1225.9 L 716.5 1223.3 L 713.6 1221.1 L 710.7 1219.4 L 707.8 1218.5 L 704.9 1218.5 L 702.0 1219.4 L 699.1 1221.1 L 696.2 1223.3 L 693.3 1225.9 L 690.4 1228.5 L 687.5 1230.7 L 684.6 1232.4 L 681.7 1233.3 L 678.8 1233.3 L 675.9 1232.4 L 673.0 1230.7 L 670.1 1228.5 L 667.2 1225.9 L 664.3 1223.3 L 661.4 1221.1 L 658.5 1219.4 L 655.6 1218.5 L 652.7 1218.5 L 649.8 1219.4 L 646.9 1221.1 L 644.0 1223.3 L 641.1 1225.9 L 638.2 1228.5 L 635.3 1230.7 L 632.4 1232.4 L 629.5 1233.3 L 626.6 1233.3 L 623.7 1232.4 L 620.8 1230.7 L 617.9 1228.5 L 615.0 1225.9 L 612.1 1223.3 L 609.2 1221.1 L 606.3 1219.4 L 603.4 1218.5 L 600.5 1218.5 L 597.6 1219.4 L 594.7 1221.1 L 591.8 1223.3 L 588.9 1225.9 L 586.0 1228.5 L 583.1 1230.7 L 580.2 1232.4 L 577.3 1233.3 L 574.4 1233.3 L 571.5 1232.4 L 568.6 1230.7 L 565.7 1228.5 L 562.8 1225.9 L 559.9 1223.3 L 557.0 1221.1 L 554.1 1219.4 L 551.2 1218.5 L 548.3 1218.5 L 545.4 1219.4 L 542.5 1221.1 L 539.6 1223.3 L 536.7 1225.9 L 533.8 1228.5 L 530.9 1230.7 L 528.0 1232.4 L 525.1 1233.3 L 522.2 1233.3 L 519.3 1232.4 L 516.4 1230.7 L 513.5 1228.5 L 510.6 1225.9 L 507.7 1223.3 L 504.8 1221.1 L 501.9 1219.4 L 499.0 1218.5 L 496.1 1218.5 L 493.2 1219.4 L 490.3 1221.1 L 487.4 1223.3 L 484.5 1225.9 L 481.6 1228.5 L 478.7 1230.7 L 475.8 1232.4 L 472.9 1233.3 L 470.0 1233.3 L 467.1 1232.4 L 464.2 1230.7 L 461.3 1228.5 L 458.4 1225.9 L 455.5 1223.3 L 452.6 1221.1 L 449.7 1219.4 L 446.8 1218.5 L 443.9 1218.5 L 441.0 1219.4 L 438.1 1221.1 L 435.2 1223.3 L 432.3 1225.9 L 429.4 1228.5 L 426.5 1230.7 L 423.6 1232.4 L 420.7 1233.3 L 417.8 1233.3 L 414.9 1232.4 L 412.0 1230.7 L 409.1 1228.5 L 406.2 1225.9 L 403.3 1223.3 L 400.4 1221.1 L 397.5 1219.4 L 394.6 1218.5 L 391.7 1218.5 L 388.8 1219.4 L 385.9 1221.1 L 383.0 1223.3 L 380.1 1225.9 L 377.2 1228.5 L 374.3 1230.7 L 371.4 1232.4 L 368.5 1233.3 L 365.6 1233.3 L 362.7 1232.4 L 359.8 1230.7 L 356.9 1228.5 L 354.0 1225.9 L 351.1 1223.3 L 348.2 1221.1 L 345.3 1219.4 L 342.4 1218.5 L 339.5 1218.5 L 336.6 1219.4 L 333.7 1221.1 L 330.8 1223.3 L 327.9 1225.9 L 325.0 1228.5 L 322.1 1230.7 L 319.2 1232.4 L 316.3 1233.3 L 313.4 1233.3 L 310.5 1232.4 L 307.6 1230.7 L 304.7 1228.5 L 301.8 1225.9 L 298.9 1223.3 L 296.0 1221.1 L 293.1 1219.4 L 290.2 1218.5 L 287.3 1218.5 L 284.4 1219.4 L 281.5 1221.1 L 278.6 1223.3 L 275.7 1225.9 L 272.8 1228.5 L 269.9 1230.7 L 267.0 1232.4 L 264.1 1233.3 L 261.2 1233.3 L 258.3 1232.4 L 255.4 1230.7 L 252.5 1228.5 L 249.6 1225.9 L 246.7 1223.3 L 243.8 1221.1 L 240.9 1219.4 L 238.0 1218.5 L 235.1 1218.5 L 232.2 1219.4 L 229.3 1221.1 L 226.4 1223.3 L 223.5 1225.9 L 220.6 1228.5 L 217.7 1230.7 L 214.8 1232.4 L 211.9 1233.3 L 209.0 1233.3 L 206.1 1232.4 L 203.2 1230.7 L 200.3 1228.5 L 197.4 1225.9 L 194.5 1223.3 L 191.6 1221.1 L 188.7 1219.4 L 185.8 1218.5 L 182.9 1218.5 L 180.0 1219.4 L 177.1 1221.1 L 174.2 1223.3 L 171.3 1225.9 L 168.4 1228.5 L 165.5 1230.7 L 162.6 1232.4 L 159.7 1233.3 L 156.8 1233.3 L 153.9 1232.4 L 151.0 1230.7 L 148.1 1228.5 L 145.2 1225.9 L 142.3 1223.3 L 139.4 1221.1 L 136.5 1219.4 L 133.6 1218.5 L 130.7 1218.5 L 127.8 1219.4 L 124.9 1221.1 L 122.0 1223.3 L 119.1 1225.9 L 116.2 1228.5 L 113.3 1230.7 L 110.4 1232.4 L 107.5 1233.3 L 104.6 1233.3 L 101.7 1232.4 L 98.8 1230.7 L 95.9 1228.5 L 93.0 1225.9 L 90.1 1223.3 L 87.2 1221.1" fill="none" stroke="#2E6FD8" stroke-width="3.2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <path id="cut-wavehead" d="M 83.2 1221.1 l 18 -10 l 0 20 z" fill="#2E6FD8"/>
+      <g id="cut-wavelab"><text x="287.3" y="1253.2" font-size="15" font-weight="700" text-anchor="middle" fill="#1D52A8">сквозное проветривание</text><text x="287.3" y="1270.2" font-size="13" text-anchor="middle" fill="#1D52A8">двери открыты — условно</text></g>
+      <g id="cut-sides">
+        <text x="155.0" y="1105.4" font-size="16" font-weight="700" fill="#5E574E">← СЕВЕР</text>
+        <text x="918.4" y="1105.4" font-size="16" font-weight="700" text-anchor="end" fill="#5E574E">ЮГ →</text>
+      </g>
+    </svg>
+
+    <div id="cut-head">
+      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="t">Разрез 1-1</div>
+      <div class="d">Ступенчатый: окно на юге → окно на севере, смотрим на восток</div>
+    </div>
+
+    <div id="cut-legend">
+      <div class="row"><div class="sw"><svg width="46" height="22"><line x1="2" y1="11" x2="44" y2="11" stroke="#E0A21A" stroke-width="3"/></svg></div>
+        <div><b>Лето, 22 июня — 57,7°</b><br>солнце заходит на <b>1,05 м</b></div></div>
+      <div class="row"><div class="sw"><svg width="46" height="22"><line x1="2" y1="11" x2="44" y2="11" stroke="#D2601A" stroke-width="3"/></svg></div>
+        <div><b>Зима, 22 декабря — 10,8°</b><br>через всю спальню — <b>4,54 м</b></div></div>
+      <div class="row"><div class="sw"><svg width="46" height="22"><path d="M2 11 q 5 -8 10 0 t 10 0 t 10 0 t 10 0" fill="none" stroke="#2E6FD8" stroke-width="3"/></svg></div>
+        <div><b>Сквозное проветривание</b><br><span class="muted">окно → дверь → коридор → кухня → окно</span></div></div>
+      <div class="row"><div class="sw"><svg width="46" height="22"><rect x="2" y="4" width="42" height="14" fill="#141414"/></svg></div>
+        <div><b>В разрезе</b> <span class="muted">· тонко — за разрезом</span></div></div>
+      <div class="muted">Казань, 55,79° с. ш. <span class="tag">УСЛОВНО</span><br>полдень: 90° − широта ± 23,44°</div>
+    </div>
+
+    <div id="cut-foot"><b>Условно:</b> широта Казани, сторона света, верх стен 2,952, двери 2,10, плоская плита вместо скатной крыши, сечения фундамента, отметка земли, без свеса крыши. Остальное — из plan.json.</div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#cut-head", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0);
+      tl.fromTo("#cut-mini", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0.1);
+      tl.fromTo("#cut-legend", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 0.25);
+      tl.fromTo("#cut-line", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power2.inOut" }, 0.35);
+      tl.fromTo("#cut-line-ends", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.85);
+      tl.fromTo("#cut-ground", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.55);
+      tl.fromTo("#cut-black", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.75);
+      tl.fromTo("#cut-sides", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.95);
+      tl.fromTo("#cut-beyond", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 1.1);
+      tl.fromTo("#cut-dims", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 1.25);
+      tl.fromTo("#cut-sun line", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.5, ease: "power2.in", stagger: 0.06 }, 1.5);
+      tl.fromTo("#cut-patches", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 2.0);
+      tl.fromTo("#cut-sunlab", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.95);
+      tl.fromTo("#cut-person", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 1.85);
+      tl.fromTo("#cut-wave", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power1.inOut" }, 2.1);
+      tl.fromTo("#cut-wavehead", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 2.6);
+      tl.fromTo("#cut-wavelab", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 2.4);
+      tl.fromTo("#cut-foot", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.35);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["cut"] = tl;
+    })();
+  </script>
+</template>
