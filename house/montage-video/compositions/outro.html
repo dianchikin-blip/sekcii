@@ -1,0 +1,25 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #F3F0EA; font-family: "Inter", sans-serif; color: #1E1B18; }
+    #out-cap { position: absolute; left: 80px; right: 80px; top: 92px; }
+    #out-cap .k { font-size: 28px; font-weight: 700; letter-spacing: .16em; color: #8A6230; }
+    #out-cap .t { font-size: 64px; font-weight: 700; letter-spacing: -0.03em; margin-top: 14px; }
+    #out-sheet { position: absolute; left: 120px; top: 250px; width: 840px; box-shadow: 0 30px 80px rgba(30, 27, 24, .18); }
+    #out-foot { position: absolute; left: 80px; right: 80px; bottom: 110px; font-size: 28px; color: #5E574E; line-height: 1.45; }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
+    <div id="out-cap"><div class="k">ЛИСТ А3 · 06-2018-АС</div><div class="t">Всё на одном листе</div></div>
+    <img id="out-sheet" src="assets/sheet.png" alt="Лист А3">
+    <div id="out-foot">Аксонометрия, разрез, поше-план, зонирование, маршруты и тени — собраны по одному плану.<br>Условное отмечено на каждом чертеже.</div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#root", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+      tl.fromTo("#out-sheet", { scale: 1.12, y: 60, transformOrigin: "50% 0%" }, { scale: 1, y: 0, duration: 1.6, ease: "power3.out" }, 0);
+      tl.fromTo("#out-cap, #out-foot", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.15 }, 0.3);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["outro"] = tl;
+    })();
+  </script>
+</template>

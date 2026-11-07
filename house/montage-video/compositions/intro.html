@@ -1,0 +1,29 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #F3F0EA; font-family: "Inter", sans-serif; color: #1E1B18; }
+    #in-box { position: absolute; left: 80px; right: 80px; top: 560px; }
+    #in-box .k { font-size: 28px; font-weight: 700; letter-spacing: .16em; color: #8A6230; }
+    #in-box .t { font-size: 104px; font-weight: 700; letter-spacing: -0.035em; line-height: 0.98; margin-top: 22px; }
+    #in-box .d { font-size: 30px; color: #5E574E; margin-top: 26px; line-height: 1.35; }
+    #in-box .list { margin-top: 64px; border-top: 2px solid #1E1B18; }
+    #in-box .li { display: flex; gap: 22px; align-items: baseline; font-size: 30px; padding: 16px 0; border-bottom: 1px solid #D8D1C5; }
+    #in-box .li b { font-size: 28px; color: #8A6230; letter-spacing: .06em; width: 52px; }
+  </style>
+  <div id="root" data-composition-id="intro" data-width="1080" data-height="1920">
+    <div id="in-box">
+      <div class="k">ШИГАЛИ · ДОМ 06-2018-АС</div>
+      <div class="t">Дом в Шигали</div>
+      <div class="d">Шесть чертежей из одного plan.json · 132,00 м²</div>
+      <div class="list"><div class="li"><b>01</b>Разнесённая аксонометрия</div><div class="li"><b>02</b>Разрез, солнце, проветривание</div><div class="li"><b>03</b>Поше-план</div><div class="li"><b>04</b>Зонирование</div><div class="li"><b>05</b>Маршруты по дому</div><div class="li"><b>06</b>Этюд теней</div></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#in-box .t", { scale: 1 }, { scale: 1.015, duration: 3.3, ease: "none", transformOrigin: "0% 50%" }, 0);
+      tl.fromTo("#in-box .li", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", stagger: 0.08 }, 0.3);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["intro"] = tl;
+    })();
+  </script>
+</template>
