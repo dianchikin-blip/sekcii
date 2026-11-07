@@ -22,6 +22,7 @@ const CLEAN = [
   { id: "R5", name: "Ванная с туалетом" },
   { id: "R11", name: "Душевая с туалетом" },
 ];
+const WASH_WINDOWS = false;   // окна мыть не нужно — по просьбе заказчика
 const SHORT = { R9: "Прихожая", R7: "Коридор", R1: "Кухня-гостиная", R5: "Ванная", R11: "Душевая" };
 const total = CLEAN.reduce((s, c) => s + room[c.id].area_table, 0);
 
@@ -103,7 +104,7 @@ const rows = CLEAN.map((c, i) => {
   const r = room[c.id], g = glass(c.id), stuff = inside(c.id);
   const extra = [];
   if (extDoor(c.id)) extra.push("входная дверь");
-  if (g.n) extra.push(`${c.id === "R1" ? "окна и стеклянная дверь" : "окно"}: ${g.n} шт., ≈ ${fmt(g.a, 1)} м² стекла`);
+  if (g.n && WASH_WINDOWS) extra.push(`${c.id === "R1" ? "окна и стеклянная дверь" : "окно"}: ${g.n} шт., ≈ ${fmt(g.a, 1)} м² стекла`);
   return `<tr><td class="n"><b>${i + 1}</b></td><td><b>${c.name}</b><div class="s">${[...stuff, ...extra].join(" · ") || "пол, плинтусы, двери"}</div></td><td class="a">${fmt(r.area_table)}</td></tr>`;
 }).join("");
 const totalGlass = CLEAN.reduce((s, c) => s + glass(c.id).a, 0);
@@ -137,14 +138,14 @@ tfoot td { border-bottom: 0; border-top: 0.4mm solid #1E1B18; font-weight: 700; 
   <div class="d">${plan.meta.address_short} · уборка по номерам от входа</div>
   <div class="big"><b>${fmt(total)} м²</b><span>убираем: ${CLEAN.length} помещений из ${plan.rooms.length - 1}</span></div>
   <div class="plan">${planSvg}
-    <div class="leg"><span><i style="background:#BFE3DA"></i>убираем</span><span><i style="background:repeating-linear-gradient(45deg,#F1EFEB 0 1.2mm,#DEDAD3 1.2mm 1.8mm)"></i>не убираем: спальни, гардеробная, котельная</span><span><i style="background:#CFE3EE"></i>окна</span></div>
+    <div class="leg"><span><i style="background:#BFE3DA"></i>убираем</span><span><i style="background:repeating-linear-gradient(45deg,#F1EFEB 0 1.2mm,#DEDAD3 1.2mm 1.8mm)"></i>не убираем: спальни, гардеробная, котельная</span><span><i style="background:#CFE3EE"></i>окна — ${WASH_WINDOWS ? "моем" : "не моем"}</span></div>
   </div>
   <table><thead><tr><th style="width:9mm">№</th><th>Помещение и что внутри</th><th class="a">Площадь, м²</th></tr></thead>
     <tbody>${rows}</tbody>
-    <tfoot><tr><td></td><td>Итого к уборке${totalGlass ? ` · стекла ≈ ${fmt(totalGlass, 1)} м² с одной стороны` : ""}</td><td class="a">${fmt(total)}</td></tr></tfoot>
+    <tfoot><tr><td></td><td>Итого к уборке${WASH_WINDOWS && totalGlass ? ` · стекла ≈ ${fmt(totalGlass, 1)} м² с одной стороны` : " · окна не моем"}</td><td class="a">${fmt(total)}</td></tr></tfoot>
   </table>
   <div class="note">Площади пола — по экспликации проекта. Кухня-гостиная — одно помещение, кухонная зона входит в ${fmt(room.R1.area_table)} м².
-  Площадь стекла посчитана по проёмам (окна 0,59–2,42 м от пола) с одной стороны, рамы не учтены — примерно.</div>
+  ${WASH_WINDOWS ? "Площадь стекла посчитана по проёмам (окна 0,59–2,42 м от пола) с одной стороны, рамы не учтены — примерно." : "<b>Окна мыть не нужно.</b>"}</div>
 </div></body></html>`;
 fs.writeFileSync(path.join(DIR, "cleaning-plan.html"), html);
 const browser = await chromium.launch();
